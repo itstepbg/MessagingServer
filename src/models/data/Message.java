@@ -1,26 +1,73 @@
 package models.data;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class Message {
 
-	//TODO This is not a behaviour that should be governed by the Message class.
-	//The time stamp should be in the standard java Date format.
-	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-	LocalDateTime now = LocalDateTime.now();
-	private DateTime timestamp = dtf.format(now);
-
-	private String text;
-
-	//TODO Should all users be referenced by their ID instead of name?
-	private String author;
-	private String recipient;
-
-	//TODO Change the enum name as per the Java standard and add a field for the status itself.
-	private enum status {
+	// Placed enum before all field declarations.
+	// Changed the enum name as per the Java standard and added a field for the
+	// status itself.
+	private enum Status {
 		RECEIVED, SEEN, DELETED
 	}
 
-	//TODO Field accessors.
+	private Status status;
+
+	private Date timestamp;
+
+	private String text;
+
+	// TODO Should all users be referenced by their ID instead of name?
+	private String author;
+	private String recipient;
+
+	// Created initialization constructor.
+	public Message(Date timestamp, String text, String author, String recipient) {
+		super();
+		this.timestamp = timestamp;
+		this.text = text;
+		this.author = author;
+		this.recipient = recipient;
+	}
+
+	// Created field accessors
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
+	public Date getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public String getRecipient() {
+		return recipient;
+	}
+
+	public void setRecipient(String recipient) {
+		this.recipient = recipient;
+	}
 }
