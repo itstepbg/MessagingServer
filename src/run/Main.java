@@ -13,7 +13,7 @@ public class Main {
 		try {
 			manageUserInput(inputOption);
 		} catch (WrongUserMenuInputException e) {
-			// TODO Auto-generated catch block
+			// TODO Replace with a more user-friendly message.
 			e.printStackTrace();
 		}
 		
@@ -21,6 +21,8 @@ public class Main {
 	}
 		
 	public static void chooseMenuOption() {
+		//TODO These are client-side functionalities. The server application needs to have the administrative ones
+		//listed in issue #1
 		System.out.println("For login, press 0: ");
 		System.out.println("For creating account, press 1: ");
 		System.out.println("For starting new chat conversation, press 2: ");
