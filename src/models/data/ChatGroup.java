@@ -4,22 +4,64 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatGroup {
-	
-	//TODO The id should be the server-provided and database-generated index (Long).
-	private String id;
+
+	// Placed enum before all field declarations.
+	// Changed the enum name as per the Java standard and added a field for the type
+	// itself.
+	private enum Type {
+		STANDARD, GLOBAL, LOBBY
+	}
+
+	// Set the id to long.
+	private long id;
 
 	private String name;
 
-	//TODO Should all users be referenced by their ID instead of name?
+	// TODO Should all users be referenced by their ID instead of name?
 	private List<String> users = new ArrayList<String>();
 	private String host;
 
 	private Boolean isPrivate;
 
-	//TODO Change the enum name as per the Java standard and add a field for the type itself.
-	private enum type {
-		STANDARD, GLOBAL, LOBBY
+	// Created field accessors.
+	public long getId() {
+		return id;
 	}
-	
-	//TODO Field accessors.
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public List<String> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<String> users) {
+		this.users = users;
+	}
+
+	public String getHost() {
+		return host;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	public Boolean getIsPrivate() {
+		return isPrivate;
+	}
+
+	public void setIsPrivate(Boolean isPrivate) {
+		this.isPrivate = isPrivate;
+	}
+
 }
