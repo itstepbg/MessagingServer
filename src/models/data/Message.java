@@ -1,7 +1,10 @@
 package models.data;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class Message {
 
@@ -9,7 +12,10 @@ public class Message {
 	//The time stamp should be in the standard java Date format.
 	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 	LocalDateTime now = LocalDateTime.now();
-	private DateTime timestamp = dtf.format(now);
+	//private Date timestamp = dtf.format();
+	private String timeStamp = 
+			new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss")
+			.format(new Timestamp(System.currentTimeMillis()));
 
 	private String text;
 
