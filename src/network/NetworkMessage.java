@@ -1,6 +1,7 @@
 package network;
 
 public class NetworkMessage {
+	
 	private MessageType type;
 	private String actor;
 	private String user;
@@ -8,7 +9,6 @@ public class NetworkMessage {
 	private String text;
 	private String passwordHash;
 	private String email;
-	private int status;
 
 	public NetworkMessage(String type, String actor, String user, Long groupId, String text, String passwordHash,
 			String email, int status) {
@@ -20,7 +20,6 @@ public class NetworkMessage {
 		this.text = text;
 		this.passwordHash = passwordHash;
 		this.email = email;
-		this.status = status;
 	}
 
 	public MessageType getType() {
@@ -49,11 +48,5 @@ public class NetworkMessage {
 
 	public String getEmail() {
 		return email;
-	}
-
-	public int getStatus() {
-		return status;
-	}
-	
-	
+	}	
 }

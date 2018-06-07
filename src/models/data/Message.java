@@ -4,15 +4,6 @@ import java.util.Date;
 
 public class Message {
 
-	// Placed enum before all field declarations.
-	// Changed the enum name as per the Java standard and added a field for the
-	// status itself.
-	private enum Status {
-		RECEIVED, SEEN, DELETED
-	}
-
-	private Status status;
-
 	private Date timestamp;
 
 	private String text;
@@ -28,15 +19,6 @@ public class Message {
 		this.text = text;
 		this.author = author;
 		this.recipient = recipient;
-	}
-
-	// Created field accessors
-	public Status getStatus() {
-		return status;
-	}
-
-	public void setStatus(Status status) {
-		this.status = status;
 	}
 
 	public Date getTimestamp() {

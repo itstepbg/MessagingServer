@@ -3,13 +3,19 @@ package run;
 import java.util.Scanner;
 
 import exceptions.WrongMenuInputException;
+import managers.DatabaseManager;
 
 public class Main {
 	
+	private static DatabaseManager databaseManager ;
+	
 	public static void main(String[] args) {
+		databaseManager = DatabaseManager.getInstance();
 		chooseMenuOption();
+		
+		
 		Scanner sc = new Scanner(System.in);
-		int inputOption = sc.nextInt(); 
+		int inputOption = sc.nextInt();
 		try {
 			manageUserInput(inputOption);
 		} catch (WrongMenuInputException e) {
