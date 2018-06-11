@@ -4,13 +4,22 @@ import java.net.InetAddress;
 
 public class User {
 
+	public final static String TABLE_NAME = "users";
+	public final static String COLUMN_ID = "id";
+	public final static String COLUMN_NAME = "name";
+	public final static String COLUMN_PASSWORD_HASH = "passwordHash";
+	public final static String COLUMN_EMAIL = "email";
+
 	// Placed enum before all field declarations.
 	// Changed the enum name as per the Java standard and added a field for the
 	// status
 	// itself.
+
 	private enum Status {
 		OFFLINE, ONLINE, AWAY, INVISIBLE, DND
 	}
+
+	private long userId;
 
 	private Status status;
 
@@ -24,10 +33,14 @@ public class User {
 
 	// Created initialization constructor.
 	public User(String name, String passwordHash, String email) {
-		super();
 		this.name = name;
 		this.passwordHash = passwordHash;
 		this.email = email;
+	}
+
+	public User(long id, String name, String passwordHash, String email) {
+		this(name, passwordHash, email);
+		this.userId = id;
 	}
 
 	// Created field accessors.
@@ -70,4 +83,13 @@ public class User {
 	public void setIpAddress(InetAddress ipAddress) {
 		this.ipAddress = ipAddress;
 	}
+
+	public long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
+
 }
