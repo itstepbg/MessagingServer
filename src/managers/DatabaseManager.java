@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import util.SqlData;
+import exceptions.InvalidWhereClauseException;
+import storage.SqlData;
+import storage.WCB;
 
 import java.sql.*;
 
@@ -64,15 +66,20 @@ public class DatabaseManager {
 		return result;
 	}
 
-	public ResultSet select(String table, Map<String, String> sqlDataMap) throws SQLException {
+	public ResultSet select(String table, WCB whereClause) throws SQLException {
 		ResultSet dbResultSet = null;
-
+		
 		try {
-			/*
-			 * TODO implement where clause SELECT column1, column2, ... FROM table_name
-			 * WHERE condition;
-			 */
+
 			String selectQuery = "SELECT * FROM " + table;
+			
+			if (whereClause != null) {
+				try {
+					selectQuery += whereClause.build();
+				} catch (InvalidWhereClauseException e) {
+					System.out.println(e.getMessage());
+				}
+			}
 
 			if (dbConnection != null) {
 				dbPreparedStatement = dbConnection.prepareStatement(selectQuery);
@@ -86,6 +93,8 @@ public class DatabaseManager {
 		return dbResultSet;
 	}
 
+	//TODO implement where clause builder.
+	
 	public boolean delete(String table, Long rowId) throws SQLException {
 		boolean result = false;
 		String deleteStatement = "DELETE FROM " + table + " WHERE id = " + rowId;

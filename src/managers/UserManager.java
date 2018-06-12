@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import models.data.User;
-import util.ORM;
+import storage.ORM;
 
 public class UserManager {
 	

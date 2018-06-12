@@ -1,4 +1,4 @@
-package util;
+package storage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -48,9 +48,8 @@ public class ORM {
 
 	public static User selectUser(String name, String email) {
 		User user = null;
-		Map<String, String> filter = new HashMap<>();
-		// TODO filter should be more advanced.
-		filter.put(User.COLUMN_NAME, name);
+		WCB filter = new WCB();
+		filter.eq(User.COLUMN_NAME, name).or().eq(User.COLUMN_EMAIL, email);
 		ResultSet dbResultSet = null;
 		try {
 			dbResultSet = DatabaseManager.getInstance().select(User.TABLE_NAME, filter);

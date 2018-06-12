@@ -6,7 +6,7 @@ import java.util.Scanner;
 import exceptions.WrongMenuInputException;
 import managers.DatabaseManager;
 import models.data.User;
-import util.ORM;
+import storage.ORM;
 import util.Sha1Hash;
 
 public class Main {
