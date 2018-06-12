@@ -54,7 +54,9 @@ public class ORM {
 		ResultSet dbResultSet = null;
 		try {
 			dbResultSet = DatabaseManager.getInstance().select(User.TABLE_NAME, filter);
-			user = resultToUser(dbResultSet);
+			if (dbResultSet.next()) {
+				user = resultToUser(dbResultSet);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -68,7 +70,6 @@ public class ORM {
 
 		try {
 			dbResultSet = DatabaseManager.getInstance().select(User.TABLE_NAME, null);
-			dbResultSet.next();
 
 			while (dbResultSet.next()) {
 				User tempUser = resultToUser(dbResultSet);
@@ -81,7 +82,6 @@ public class ORM {
 				try {
 					dbResultSet.close();
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -92,16 +92,13 @@ public class ORM {
 	private static User resultToUser(ResultSet dbResultSet) {
 		User result = null;
 		try {
-			if (dbResultSet != null && dbResultSet.next()) {
-				long userId = dbResultSet.getLong(User.COLUMN_ID);
-				String name = dbResultSet.getString(User.COLUMN_NAME);
-				String passwordHash = dbResultSet.getString(User.COLUMN_PASSWORD_HASH);
-				String email = dbResultSet.getString(User.COLUMN_EMAIL);
+			long userId = dbResultSet.getLong(User.COLUMN_ID);
+			String name = dbResultSet.getString(User.COLUMN_NAME);
+			String passwordHash = dbResultSet.getString(User.COLUMN_PASSWORD_HASH);
+			String email = dbResultSet.getString(User.COLUMN_EMAIL);
 
-				result = new User(userId, name, passwordHash, email);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			result = new User(userId, name, passwordHash, email);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return result;

@@ -53,8 +53,8 @@ public class DatabaseManager {
 					dbPreparedStatement.setString(i, sqlData.getValues().get(i - 1));
 				}
 
-				result = dbPreparedStatement.execute();
-				System.out.println("Insert Completed Successfully...");
+				result = dbPreparedStatement.executeUpdate() > 0;
+				System.out.println(result + " Insert Completed Successfully...");
 			}
 
 		} catch (SQLException e) {
@@ -88,11 +88,11 @@ public class DatabaseManager {
 
 	public boolean delete(String table, Long rowId) throws SQLException {
 		boolean result = false;
-		String deleteStatement = "DELETE FROM " + table + "WHERE id = " + rowId;
+		String deleteStatement = "DELETE FROM " + table + " WHERE id = " + rowId;
 
 		try {
 			dbPreparedStatement = dbConnection.prepareStatement(deleteStatement);
-			result = dbPreparedStatement.execute();
+			result = dbPreparedStatement.executeUpdate() == 0;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
