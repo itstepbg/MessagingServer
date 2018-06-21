@@ -68,11 +68,16 @@ public class DatabaseManager {
 
 	public ResultSet select(String table, WCB whereClause) throws SQLException {
 		ResultSet dbResultSet = null;
+		try {
+			System.out.println(whereClause.build());
+		} catch (InvalidWhereClauseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		try {
-
 			String selectQuery = "SELECT * FROM " + table;
-			
+
 			if (whereClause != null) {
 				try {
 					selectQuery += whereClause.build();
@@ -93,8 +98,8 @@ public class DatabaseManager {
 		return dbResultSet;
 	}
 
-	//TODO implement where clause builder.
-	
+	// TODO implement where clause builder.
+
 	public boolean delete(String table, Long rowId) throws SQLException {
 		boolean result = false;
 		String deleteStatement = "DELETE FROM " + table + " WHERE id = " + rowId;

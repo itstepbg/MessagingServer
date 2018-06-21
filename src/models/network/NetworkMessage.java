@@ -1,4 +1,4 @@
-package network;
+package models.network;
 
 public class NetworkMessage {
 	

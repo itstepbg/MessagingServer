@@ -1,4 +1,4 @@
-package network;
+package models.network;
 
 public enum MessageType {
 		CREATE_USRE, LOGIN, LOGOUT, CREATE_GROUP, INVITE_USER, JOIN_GROUP,
