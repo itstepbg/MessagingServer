@@ -68,13 +68,7 @@ public class DatabaseManager {
 
 	public ResultSet select(String table, WCB whereClause) throws SQLException {
 		ResultSet dbResultSet = null;
-		try {
-			System.out.println(whereClause.build());
-		} catch (InvalidWhereClauseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
+
 		try {
 			String selectQuery = "SELECT * FROM " + table;
 
@@ -85,6 +79,8 @@ public class DatabaseManager {
 					System.out.println(e.getMessage());
 				}
 			}
+			
+			System.out.println("SQL: " + selectQuery);
 
 			if (dbConnection != null) {
 				dbPreparedStatement = dbConnection.prepareStatement(selectQuery);

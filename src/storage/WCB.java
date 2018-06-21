@@ -17,7 +17,7 @@ public class WCB {
 	public WCB eq(String column, String value) {
 		columns.add(column);
 		values.add(value);
-
+		
 		return this;
 	}
 
@@ -37,11 +37,12 @@ public class WCB {
 		if (logicalOperators.size() != columns.size() - 1) {
 			throw new InvalidWhereClauseException("Condition and logical operator count mismatch.");
 		}
-		
+
 		StringBuilder sBuilder = new StringBuilder();
 		sBuilder.append(WHERE);
 		for (int i = 0; i < columns.size(); i++) {
-			sBuilder.append(columns.get(i)).append(CONDITION_EQUALS).append(values.get(i));
+			sBuilder.append(columns.get(i)).append(CONDITION_EQUALS)
+			.append("'").append(values.get(i)).append("'");
 			if (i < columns.size() - 1) {
 				sBuilder.append(logicalOperators.get(i));
 			}
