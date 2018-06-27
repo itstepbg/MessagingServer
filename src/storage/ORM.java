@@ -16,7 +16,7 @@ public class ORM {
 	// deleteUser
 	// select * users
 
-	public static boolean insertUser(User user) {
+	public static boolean insertUser(User user) {		
 		boolean result = false;
 		String name = user.getName();
 		String passwordHash = user.getPasswordHash();

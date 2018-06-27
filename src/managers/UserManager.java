@@ -8,6 +8,8 @@ import storage.ORM;
 
 public class UserManager {
 	
+	public static final int NO_USER = -1;
+	
 	private static UserManager instance = new UserManager();
 
 	private UserManager() {
@@ -42,6 +44,20 @@ public class UserManager {
 	
 	public User getUser(String keyword) {
 		return ORM.selectUser(keyword, keyword);
+	}
+	
+	public long login(String name, String passwordHash) {
+		
+		User user = getUser(name);
+		
+		if (user == null) {
+			return NO_USER;
+		}else {
+			if (user.getPasswordHash().equals(passwordHash)) {
+				return user.getUserId();
+			}
+			return NO_USER;
+		}
 	}
 	
 }
