@@ -16,7 +16,7 @@ import models.network.NetworkMessage;
 public class CommunicationThread extends Thread {
 
 	private Socket socket;
-	private Long userId;
+	private Long userId = UserManager.NO_USER;
 
 	public CommunicationThread(Socket socket) {
 		this.socket = socket;
@@ -37,7 +37,7 @@ public class CommunicationThread extends Thread {
 		}
 
 		if (inFromClient != null && outToClient != null) {
-			while (!socket.isClosed()) {
+			while (!socket.isClosed() && !Thread.interrupted()) {
 				String messageXml = null;
 
 				try {
@@ -63,14 +63,9 @@ public class CommunicationThread extends Thread {
 								networkMessage.getPasswordHash());
 
 						if (userId > UserManager.NO_USER) {
-							MessagingManager.getInstance().initCommunication(userId, this);
+							MessagingManager.getInstance().addLoggedUserInMap(userId, this);
 						} else {
-							try {
-								socket.close();
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+							interrupt();
 						}
 						break;
 
@@ -79,9 +74,24 @@ public class CommunicationThread extends Thread {
 					}
 				}
 			}
+
+			if (!socket.isClosed()) {
+				try {
+					socket.close();
+
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 
-		MessagingManager.getInstance().closeCommunication(userId);
+		if (userId != UserManager.NO_USER) {
+			MessagingManager.getInstance().removeLoggedUserFromMap(userId);
+		}
+
+		MessagingManager.getInstance().removeCommunicationThread(this);
+
 	}
 
 }

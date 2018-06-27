@@ -8,7 +8,7 @@ import storage.ORM;
 
 public class UserManager {
 
-	public static final int NO_USER = -1;
+	public static final long NO_USER = -1;
 
 	private static UserManager instance = new UserManager();
 

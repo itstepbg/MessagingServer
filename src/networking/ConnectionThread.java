@@ -32,6 +32,13 @@ public class ConnectionThread extends Thread {
 				e.printStackTrace();
 			}
 		}
+		
+		try {
+			connectionSocket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

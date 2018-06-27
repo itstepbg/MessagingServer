@@ -5,6 +5,8 @@ import java.util.Scanner;
 
 import exceptions.WrongMenuInputException;
 import managers.DatabaseManager;
+import managers.MessagingManager;
+import managers.NetworkManager;
 import models.data.User;
 import storage.ORM;
 import util.Sha1Hash;
@@ -12,11 +14,14 @@ import util.Sha1Hash;
 public class Main {
 	private static Scanner sc = new Scanner(System.in);
 	private static DatabaseManager databaseManager;
+	private static NetworkManager networkManager;
 
 	private static boolean running = true;
 
 	public static void main(String[] args) {
 		databaseManager = DatabaseManager.getInstance();
+		networkManager = new NetworkManager();
+		networkManager.startConnectionThread(3000);
 
 		while (running) {
 			chooseMenuOption();
@@ -64,6 +69,8 @@ public class Main {
 		running = false;
 		sc.close();
 		databaseManager.closeConnection();
+		networkManager.stopConnectionThread();
+		MessagingManager.getInstance().closeAllCommunication();
 		System.exit(0);
 	}
 
