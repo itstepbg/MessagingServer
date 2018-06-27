@@ -11,30 +11,25 @@ public class MessagingManager {
 
 	private Map<Long, CommunicationThread> userCommunicationMap = new ConcurrentHashMap<>();
 	private static final MessagingManager messagingManager = new MessagingManager();
-	
-	private MessagingManager() {}
-	
+
+	private MessagingManager() {
+	}
+
 	public static MessagingManager getInstance() {
 		return messagingManager;
 
 	}
-	
-	public void initCommunication(Long userId, Socket communication) {
-		
-		userCommunicationMap
-		.put(userId, CommunicationThreadFactory.createCommunicationThread(userId, communication)); 
-		
+
+	public void initCommunication(Long userId, CommunicationThread communicationThread) {
+		userCommunicationMap.put(userId, communicationThread);
 	}
-	
+
 	public void closeCommunication(Long userId) {
-		
 		if (userCommunicationMap.containsKey(userId)) {
 			userCommunicationMap.remove(userId);
-		}else {
-			System.out.println("Attempting to remove not existing thread.");
+		} else {
+			System.out.println("Attempting to remove non-existing communication thread.");
 		}
 	}
-	
-	
-	
+
 }
