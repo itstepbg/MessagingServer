@@ -9,6 +9,7 @@ import managers.MessagingManager;
 import managers.NetworkManager;
 import models.data.User;
 import storage.ORM;
+import util.Logger;
 import util.Sha1Hash;
 
 public class Main {
@@ -90,10 +91,10 @@ public class Main {
 		User user = ORM.selectUser(keyword, keyword);
 		if (user != null) {
 			if (ORM.deleteUser(user)) {
-				System.out.println("User successfully deleted");
+				Logger.logInfo("User successfully deleted");
 			}
 		} else {
-			System.out.println("No such user!");
+			Logger.logInfo("No such user!");
 		}
 	}
 
@@ -119,9 +120,9 @@ public class Main {
 
 		User user = new User(name, passwrodHash, email);
 		if (ORM.insertUser(user)) {
-			System.out.println("User created");
+			Logger.logInfo("User created");
 		} else {
-			System.out.println("Username or email already exists");
+			Logger.logError("Username or email already exists");
 			createUser();
 		}
 	}

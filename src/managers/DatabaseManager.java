@@ -1,5 +1,10 @@
 package managers;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,8 +12,7 @@ import java.util.Map;
 import exceptions.InvalidWhereClauseException;
 import storage.SqlData;
 import storage.WCB;
-
-import java.sql.*;
+import util.Logger;
 
 public class DatabaseManager {
 	private static final String JDB_DATABASE = "piraty_chat_client";
@@ -32,7 +36,7 @@ public class DatabaseManager {
 	private void initDatabaseConnection() {
 		try {
 			dbConnection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-			System.out.println("Connected to SQL server.");
+			Logger.logMessage("Connected to SQL server.");
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
@@ -56,7 +60,8 @@ public class DatabaseManager {
 				}
 
 				result = dbPreparedStatement.executeUpdate() > 0;
-				System.out.println(result + " Insert Completed Successfully...");
+				Logger.logInfo("Insert Completed Successfully...");
+
 			}
 
 		} catch (SQLException e) {
@@ -79,7 +84,7 @@ public class DatabaseManager {
 					System.out.println(e.getMessage());
 				}
 			}
-			
+
 			System.out.println("SQL: " + selectQuery);
 
 			if (dbConnection != null) {
@@ -88,7 +93,7 @@ public class DatabaseManager {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Logger.logError(e.getMessage());
 		}
 
 		return dbResultSet;
