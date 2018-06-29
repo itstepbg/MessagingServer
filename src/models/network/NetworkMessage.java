@@ -1,5 +1,8 @@
 package models.network;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class NetworkMessage {
 	
 	private MessageType type;
@@ -10,6 +13,10 @@ public class NetworkMessage {
 	private String passwordHash;
 	private String email;
 
+	public NetworkMessage() {
+		
+	}
+	
 	public NetworkMessage(String type, String actor, String user, Long groupId, String text, String passwordHash,
 			String email, int status) {
 

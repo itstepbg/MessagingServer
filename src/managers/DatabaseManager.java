@@ -36,7 +36,7 @@ public class DatabaseManager {
 	private void initDatabaseConnection() {
 		try {
 			dbConnection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-			Logger.logMessage("Connected to SQL server.");
+			Logger.logInfo("Connected to SQL server.");
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}

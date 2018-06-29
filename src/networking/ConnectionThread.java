@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import util.Logger;
+
 public class ConnectionThread extends Thread {
 
 	private int serverPort;
@@ -24,6 +26,8 @@ public class ConnectionThread extends Thread {
 		while (!Thread.interrupted()) {
 			try {
 				Socket communicationSocket = connectionSocket.accept();
+				communicationSocket.setSoTimeout(2000);
+				Logger.logInfo("New connection from " + communicationSocket.getInetAddress().getHostAddress());
 				CommunicationThread communicationThread = CommunicationThreadFactory
 						.createCommunicationThread(communicationSocket);
 				communicationThread.start();
