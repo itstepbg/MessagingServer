@@ -9,6 +9,7 @@ import managers.DatabaseManager;
 import managers.MessagingManager;
 import managers.NetworkManager;
 import models.data.User;
+import networking.ConnectionThreadSSLServer;
 import storage.ORM;
 import util.MessagingServerLogger;
 import util.Sha1Hash;
@@ -20,7 +21,11 @@ public class Main {
 	private static boolean running = true;
 	private static Logger logger = MessagingServerLogger.getLogger();
 
+	private static ConnectionThreadSSLServer sslThread;
+
 	public static void main(String[] args) {
+		sslThread = new ConnectionThreadSSLServer();
+		sslThread.runServer();
 		databaseManager = DatabaseManager.getInstance();
 		networkManager = new NetworkManager();
 		networkManager.startConnectionThread(3000);
