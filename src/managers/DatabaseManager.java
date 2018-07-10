@@ -8,17 +8,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import exceptions.InvalidWhereClauseException;
 import storage.SqlData;
 import storage.WCB;
-import util.Logger;
+import util.MessagingServerLogger;
 
 public class DatabaseManager {
 	private static final String JDB_DATABASE = "piraty_chat_client";
 	private static final String DB_URL = "jdbc:mysql://18.184.169.162:3306/" + JDB_DATABASE;
 	private static final String DB_USER = "chatServer";
 	private static final String DB_PASS = "testPassword";
+	private static Logger logger = MessagingServerLogger.getLogger();
 
 	private Connection dbConnection = null;
 	private PreparedStatement dbPreparedStatement = null;
@@ -36,7 +38,7 @@ public class DatabaseManager {
 	private void initDatabaseConnection() {
 		try {
 			dbConnection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-			Logger.logMessage("Connected to SQL server.");
+			logger.info("Connected to SQL server.");
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
@@ -60,7 +62,7 @@ public class DatabaseManager {
 				}
 
 				result = dbPreparedStatement.executeUpdate() > 0;
-				Logger.logInfo("Insert Completed Successfully...");
+				logger.info("Insert Completed Successfully...");
 
 			}
 
@@ -93,7 +95,7 @@ public class DatabaseManager {
 			}
 
 		} catch (SQLException e) {
-			Logger.logError(e.getMessage());
+			logger.warning(e.getMessage());
 		}
 
 		return dbResultSet;
@@ -107,9 +109,9 @@ public class DatabaseManager {
 
 		try {
 			dbPreparedStatement = dbConnection.prepareStatement(deleteStatement);
-			result = dbPreparedStatement.executeUpdate() == 0;
+			result = dbPreparedStatement.executeUpdate() == 1;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.warning(e.getMessage());
 		}
 		return result;
 	}

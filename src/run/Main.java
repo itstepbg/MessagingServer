@@ -2,6 +2,7 @@ package run;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 import exceptions.WrongMenuInputException;
 import managers.DatabaseManager;
@@ -9,15 +10,15 @@ import managers.MessagingManager;
 import managers.NetworkManager;
 import models.data.User;
 import storage.ORM;
-import util.Logger;
+import util.MessagingServerLogger;
 import util.Sha1Hash;
 
 public class Main {
 	private static Scanner sc = new Scanner(System.in);
 	private static DatabaseManager databaseManager;
 	private static NetworkManager networkManager;
-
 	private static boolean running = true;
+	private static Logger logger = MessagingServerLogger.getLogger();
 
 	public static void main(String[] args) {
 		databaseManager = DatabaseManager.getInstance();
@@ -91,10 +92,10 @@ public class Main {
 		User user = ORM.selectUser(keyword, keyword);
 		if (user != null) {
 			if (ORM.deleteUser(user)) {
-				Logger.logInfo("User successfully deleted");
+				logger.warning("User " + user.getName() + " successfully deleted");
 			}
 		} else {
-			Logger.logInfo("No such user!");
+			logger.warning("No such user!");
 		}
 	}
 
@@ -120,9 +121,9 @@ public class Main {
 
 		User user = new User(name, passwrodHash, email);
 		if (ORM.insertUser(user)) {
-			Logger.logInfo("User created");
+			logger.info("User created");
 		} else {
-			Logger.logError("Username or email already exists");
+			logger.info("Username or email already exists");
 			createUser();
 		}
 	}
