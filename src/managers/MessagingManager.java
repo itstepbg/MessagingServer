@@ -46,7 +46,7 @@ public class MessagingManager {
 	
 	public void closeAllCommunication() {
 		for (CommunicationThread communicationThread : allCommunicationThreads) {
-			communicationThread.interrupt();
+			communicationThread.closeCommunication();
 		}
 	}
 	
