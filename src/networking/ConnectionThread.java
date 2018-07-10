@@ -3,14 +3,16 @@ package networking;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Logger;
 
-import util.Logger;
+import util.MessagingServerLogger;
 
 public class ConnectionThread extends Thread {
 
 	private int serverPort;
 	private ServerSocket connectionSocket;
-	
+	private static Logger logger = MessagingServerLogger.getLogger();
+
 	public ConnectionThread(int serverPort) {
 		this.serverPort = serverPort;
 	}
@@ -27,7 +29,7 @@ public class ConnectionThread extends Thread {
 			try {
 				Socket communicationSocket = connectionSocket.accept();
 				communicationSocket.setSoTimeout(2000);
-				Logger.logInfo("New connection from " + communicationSocket.getInetAddress().getHostAddress());
+				logger.info("New connection from " + communicationSocket.getInetAddress().getHostAddress());
 				CommunicationThread communicationThread = CommunicationThreadFactory
 						.createCommunicationThread(communicationSocket);
 				communicationThread.start();
@@ -36,7 +38,7 @@ public class ConnectionThread extends Thread {
 				e.printStackTrace();
 			}
 		}
-		
+
 		try {
 			connectionSocket.close();
 		} catch (IOException e) {

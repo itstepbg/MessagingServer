@@ -5,21 +5,21 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
-import org.simpleframework.xml.stream.CamelCaseStyle;
 
 import managers.MessagingManager;
 import managers.UserManager;
-import models.network.MessageType;
 import models.network.NetworkMessage;
-import util.Logger;
+import util.MessagingServerLogger;
 
 public class CommunicationThread extends Thread {
 
 	private Socket socket;
 	private Long userId = UserManager.NO_USER;
+	private static Logger logger = MessagingServerLogger.getLogger();
 
 	public CommunicationThread(Socket socket) {
 		this.socket = socket;
@@ -49,7 +49,7 @@ public class CommunicationThread extends Thread {
 						closeCommunication();
 						break;
 					}
-					Logger.logMessage(messageXml);
+					logger.info(messageXml);
 				} catch (IOException e) {
 					// The read has timed-out, so we do a blocking wait for input again...
 					continue;
@@ -72,10 +72,10 @@ public class CommunicationThread extends Thread {
 
 						if (userId > UserManager.NO_USER) {
 							MessagingManager.getInstance().addLoggedUserInMap(userId, this);
-							Logger.logInfo("User " + userId + " logged in!");
+							logger.info("User " + userId + " logged in!");
 						} else {
 							closeCommunication();
-							Logger.logInfo("User login error.");
+							logger.info("User login error.");
 						}
 						break;
 					// The explicit LOGOUT may be redundant, due to the fact that closing the
@@ -92,7 +92,7 @@ public class CommunicationThread extends Thread {
 	}
 
 	public void closeCommunication() {
-		Logger.logInfo("Closing communication for " + socket.getInetAddress().getHostAddress());
+		logger.info("Closing communication for " + socket.getInetAddress().getHostAddress());
 
 		if (!socket.isClosed()) {
 			try {
