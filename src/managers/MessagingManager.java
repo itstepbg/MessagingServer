@@ -5,15 +5,16 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import networking.CommunicationThread;
-import networking.CommunicationThreadFactory;
+import networking.CommunicationInterface;
+import networking.InputThread;
 
 public class MessagingManager {
 
-	private ArrayList<CommunicationThread> allCommunicationThreads = new ArrayList<>();
-	private Map<Long, CommunicationThread> loggedUserCommunicationMap = new ConcurrentHashMap<>();
+	private ArrayList<CommunicationInterface> allCommunicationThreads = new ArrayList<>();
+	private Map<Long, CommunicationInterface> loggedUserCommunicationMap = new ConcurrentHashMap<>();
 	private static final MessagingManager messagingManager = new MessagingManager();
-
+	
+	
 	private MessagingManager() {
 	}
 
@@ -22,8 +23,8 @@ public class MessagingManager {
 
 	}
 
-	public void addLoggedUserInMap(Long userId, CommunicationThread communicationThread) {
-		loggedUserCommunicationMap.put(userId, communicationThread);
+	public void addLoggedUserInMap(Long userId, CommunicationInterface communication) {
+		loggedUserCommunicationMap.put(userId, communication);
 	}
 
 	public void removeLoggedUserFromMap(Long userId) {
@@ -34,19 +35,19 @@ public class MessagingManager {
 		}
 	}
 	
-	public void addCommunicationThread(CommunicationThread communicationThread) {
-		allCommunicationThreads.add(communicationThread);
+	public void addCommunication(CommunicationInterface communication) {
+		allCommunicationThreads.add(communication);
 	}
 	
-	public void removeCommunicationThread(CommunicationThread communicationThread) {
-		if (allCommunicationThreads.contains(communicationThread)) {
-			allCommunicationThreads.remove(communicationThread);
+	public void removeCommunication(CommunicationInterface communication) {
+		if (allCommunicationThreads.contains(communication)) {
+			allCommunicationThreads.remove(communication);
 		}
 	}
 	
 	public void closeAllCommunication() {
-		for (CommunicationThread communicationThread : allCommunicationThreads) {
-			communicationThread.closeCommunication();
+		for (CommunicationInterface communication : allCommunicationThreads) {
+			communication.closeCommunication();
 		}
 	}
 	

@@ -24,8 +24,8 @@ public class Main {
 	private static ConnectionThreadSSLServer sslThread;
 
 	public static void main(String[] args) {
-		sslThread = new ConnectionThreadSSLServer();
-		sslThread.runServer();
+//		sslThread = new ConnectionThreadSSLServer();
+//		sslThread.runServer();
 		databaseManager = DatabaseManager.getInstance();
 		networkManager = new NetworkManager();
 		networkManager.startConnectionThread(3000);

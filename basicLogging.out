@@ -1,0 +1,14 @@
+Jul 10, 2018 3:54:14 PM managers.DatabaseManager initDatabaseConnection
+INFO: Connected to SQL server.
+Jul 10, 2018 3:54:47 PM managers.DatabaseManager initDatabaseConnection
+INFO: Connected to SQL server.
+Jul 10, 2018 3:55:38 PM networking.ConnectionThread run
+INFO: New connection from 192.168.100.14
+Jul 10, 2018 3:55:55 PM networking.CommunicationThread run
+INFO: <?xml version="1.0" encoding="UTF-8" standalone="yes"?><networkMessage><actor>Rali</actor><passwordHash>c15ba216e3e72102dd5b97f4600890b19308767c</passwordHash><type>LOGIN</type></networkMessage>
+Jul 10, 2018 3:55:55 PM networking.CommunicationThread run
+INFO: User 37 logged in!
+Jul 10, 2018 3:55:55 PM networking.CommunicationThread run
+INFO: <?xml version="1.0" encoding="UTF-8" standalone="yes"?><networkMessage><type>LOGOUT</type></networkMessage>
+Jul 10, 2018 3:55:55 PM networking.CommunicationThread closeCommunication
+INFO: Closing communication for 192.168.100.14

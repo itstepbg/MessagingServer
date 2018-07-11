@@ -4,7 +4,10 @@ import java.net.Socket;
 
 public class CommunicationThreadFactory {
 
-	static CommunicationThread createCommunicationThread(Socket socket) {
-		return new CommunicationThread(socket);
+	static InputThread createInputThread(Socket socket) {
+		return new InputThread(socket);
+	}
+	static OutputThread createOutputThread(Socket socket) {
+		return new OutputThread(socket);
 	}
 }
