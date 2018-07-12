@@ -3,8 +3,10 @@ package networking;
 import models.network.NetworkMessage;
 
 public interface CommunicationInterface {
+	
+	public void handleMessage(NetworkMessage networkMessage);
 
-	public void addMessageToQueue(NetworkMessage message);
+	public void sendMessage(NetworkMessage networkMessage);
 	
 	public void closeCommunication();
 }

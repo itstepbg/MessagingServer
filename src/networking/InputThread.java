@@ -17,25 +17,18 @@ import util.MessagingServerLogger;
 
 public class InputThread extends CommunicationThread {
 
-
-	private Socket socket;
-	private Long userId = UserManager.NO_USER;
-	private static Logger logger = MessagingServerLogger.getLogger();
-
 	public InputThread(Socket socket) {
 		super(socket);
 	}
-	
+
 	@Override
 	public void run() {
 		BufferedReader inFromClient = null;
 
 		try {
 			inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (IOException e) {
+			communicationListener.closeCommunication();
 		}
 
 		if (inFromClient != null) {
@@ -45,7 +38,7 @@ public class InputThread extends CommunicationThread {
 				try {
 					messageXml = inFromClient.readLine();
 					if (messageXml == null) {
-						closeCommunication();
+						communicationListener.closeCommunication();
 						break;
 					}
 					logger.info(messageXml);
@@ -54,62 +47,25 @@ public class InputThread extends CommunicationThread {
 					continue;
 				}
 
-				Serializer serializer = new Persister();
-				NetworkMessage networkMessage = null;
-				try {
-					networkMessage = serializer.read(NetworkMessage.class, messageXml);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				NetworkMessage networkMessage = deserializeMessage(messageXml);
 
 				if (networkMessage != null) {
-					switch (networkMessage.getType()) {
-					case LOGIN:
-						long userId = UserManager.getInstance().login(networkMessage.getActor(),
-								networkMessage.getPasswordHash());
-
-						// TODO Generate and send a status response to the client.
-						if (userId > UserManager.NO_USER) {
-							MessagingManager.getInstance().addLoggedUserInMap(userId, communicationListener);
-							logger.info("User " + userId + " logged in!");
-						} else {
-							closeCommunication();
-							logger.info("User login error.");
-						}
-						break;
-					// The explicit LOGOUT may be redundant, due to the fact that closing the
-					// client-side socket handles this.
-					case LOGOUT:
-						closeCommunication();
-						break;
-					default:
-						break;
-					}
+					communicationListener.handleMessage(networkMessage);
 				}
 			}
 		}
 	}
 
-	public void closeCommunication() {
-		logger.info("Closing communication for " + socket.getInetAddress().getHostAddress());
-
-		if (!socket.isClosed()) {
-			try {
-				socket.close();
-
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	private NetworkMessage deserializeMessage(String messageXml) {
+		Serializer serializer = new Persister();
+		NetworkMessage networkMessage = null;
+		try {
+			networkMessage = serializer.read(NetworkMessage.class, messageXml);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
-		if (userId != UserManager.NO_USER) {
-			MessagingManager.getInstance().removeLoggedUserFromMap(userId);
-		}
-
-		MessagingManager.getInstance().removeCommunication(communicationListener);
+		return networkMessage;
 	}
-	
-	
 }

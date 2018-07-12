@@ -1,9 +1,14 @@
 package networking;
 
 import java.net.Socket;
+import java.util.logging.Logger;
 
-public class CommunicationThread extends Thread{
+import util.MessagingServerLogger;
 
+public class CommunicationThread extends Thread {
+
+	protected Logger logger = MessagingServerLogger.getLogger();
+	
 	protected CommunicationInterface communicationListener;
 	protected Socket socket;
 	

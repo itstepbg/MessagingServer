@@ -2,21 +2,26 @@ package networking;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.Socket;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+
+import models.network.NetworkMessage;
+
 public class OutputThread extends CommunicationThread {
 	
-	private Socket socket;
-	private BlockingQueue<String> messages = new ArrayBlockingQueue<String>(64);
+	private BlockingQueue<NetworkMessage> messages = new ArrayBlockingQueue<NetworkMessage>(64);
 
 	public OutputThread(Socket socket) {
 		super(socket);
 	}
 
-	public void addMessage(String message) {
+	public void addMessage(NetworkMessage message) {
 		try {
 			messages.put(message);
 		} catch (InterruptedException e) {
@@ -37,15 +42,17 @@ public class OutputThread extends CommunicationThread {
 
 		if (outToClient != null) {
 			while (!socket.isClosed()) {
-				String message = null;
+				NetworkMessage networkMessage = null;
 				try {
-					message = messages.poll(2, TimeUnit.SECONDS);
+					networkMessage = messages.poll(2, TimeUnit.SECONDS);
 				} catch (InterruptedException e) {
 
 				}
-				if (message != null) {
+				
+				if (networkMessage != null) {
 					try {
-						outToClient.writeBytes(message);
+						String messageXml = serializeMessage(networkMessage);
+						outToClient.writeBytes(messageXml);
 					} catch (IOException e) {
 						// TODO ?
 						e.printStackTrace();
@@ -53,5 +60,28 @@ public class OutputThread extends CommunicationThread {
 				}
 			}
 		}
+	}
+
+	private String serializeMessage(NetworkMessage networkMessage) {
+		
+		String serializedMessage = null;
+		
+		try {
+			JAXBContext ctx = JAXBContext.newInstance(NetworkMessage.class);
+
+	        Marshaller m = ctx.createMarshaller();
+	        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, false);
+
+	        StringWriter sw = new StringWriter();
+	        m.marshal(networkMessage, sw);
+	        sw.close();
+	        
+	        serializedMessage = sw.toString();
+	        
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		return serializedMessage;
 	}
 }
