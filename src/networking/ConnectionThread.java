@@ -6,13 +6,13 @@ import java.net.Socket;
 import java.util.logging.Logger;
 
 import managers.MessagingManager;
-import util.MessagingServerLogger;
+import library.util.MessagingLogger;
 
 public class ConnectionThread extends Thread {
 
 	private int serverPort;
 	private ServerSocket connectionSocket;
-	private static Logger logger = MessagingServerLogger.getLogger();
+	private static Logger logger = MessagingLogger.getLogger();
 
 	public ConnectionThread(int serverPort) {
 		this.serverPort = serverPort;

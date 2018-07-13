@@ -13,14 +13,14 @@ import java.util.logging.Logger;
 import exceptions.InvalidWhereClauseException;
 import storage.SqlData;
 import storage.WCB;
-import util.MessagingServerLogger;
+import library.util.MessagingLogger;
 
 public class DatabaseManager {
 	private static final String JDB_DATABASE = "piraty_chat_client";
 	private static final String DB_URL = "jdbc:mysql://18.184.169.162:3306/" + JDB_DATABASE;
 	private static final String DB_USER = "chatServer";
 	private static final String DB_PASS = "testPassword";
-	private static Logger logger = MessagingServerLogger.getLogger();
+	private static Logger logger = MessagingLogger.getLogger();
 
 	private Connection dbConnection = null;
 	private PreparedStatement dbPreparedStatement = null;

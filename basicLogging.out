@@ -12,3 +12,5 @@ Jul 10, 2018 3:55:55 PM networking.CommunicationThread run
 INFO: <?xml version="1.0" encoding="UTF-8" standalone="yes"?><networkMessage><type>LOGOUT</type></networkMessage>
 Jul 10, 2018 3:55:55 PM networking.CommunicationThread closeCommunication
 INFO: Closing communication for 192.168.100.14
+Jul 12, 2018 4:40:44 PM managers.DatabaseManager initDatabaseConnection
+INFO: Connected to SQL server.

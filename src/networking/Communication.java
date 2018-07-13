@@ -6,12 +6,16 @@ import java.util.logging.Logger;
 
 import managers.MessagingManager;
 import managers.UserManager;
-import models.network.NetworkMessage;
-import util.MessagingServerLogger;
+import library.models.network.NetworkMessage;
+import library.networking.CommunicationInterface;
+import library.networking.CommunicationThreadFactory;
+import library.networking.InputThread;
+import library.networking.OutputThread;
+import library.util.MessagingLogger;
 
 public class Communication implements CommunicationInterface {
 
-	private static Logger logger = MessagingServerLogger.getLogger();
+	private static Logger logger = MessagingLogger.getLogger();
 	
 	private InputThread inputThread;
 	private OutputThread outputThread;

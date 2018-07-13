@@ -1,12 +1,10 @@
 package managers;
 
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import networking.CommunicationInterface;
-import networking.InputThread;
+import library.networking.CommunicationInterface;
 
 public class MessagingManager {
 

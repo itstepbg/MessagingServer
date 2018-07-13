@@ -11,15 +11,15 @@ import managers.NetworkManager;
 import models.data.User;
 import networking.ConnectionThreadSSLServer;
 import storage.ORM;
-import util.MessagingServerLogger;
-import util.Sha1Hash;
+import library.util.MessagingLogger;
+import library.util.Sha1Hash;
 
 public class Main {
 	private static Scanner sc = new Scanner(System.in);
 	private static DatabaseManager databaseManager;
 	private static NetworkManager networkManager;
 	private static boolean running = true;
-	private static Logger logger = MessagingServerLogger.getLogger();
+	private static Logger logger = MessagingLogger.getLogger();
 
 	private static ConnectionThreadSSLServer sslThread;
 
