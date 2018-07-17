@@ -48,7 +48,7 @@ public class Communication implements CommunicationInterface {
 			boolean success = UserManager.getInstance().createUser(networkMessage.getActor(),
 					networkMessage.getPasswordHash(), networkMessage.getEmail());
 
-			closeCommunication();
+			// TODO Generate and send a status response to the client.
 			if (success) {
 				logger.info("User created successfully.");
 			} else {
@@ -78,6 +78,8 @@ public class Communication implements CommunicationInterface {
 		}
 	}
 
+	// TODO There should be a separate closeSocket() method
+	// that should be called from the MessagingManager instead.
 	@Override
 	public void closeCommunication() {
 		logger.info("Closing communication for " + communicationSocket.getInetAddress().getHostAddress());

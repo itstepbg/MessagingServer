@@ -11,8 +11,7 @@ public class MessagingManager {
 	private ArrayList<CommunicationInterface> allCommunicationThreads = new ArrayList<>();
 	private Map<Long, CommunicationInterface> loggedUserCommunicationMap = new ConcurrentHashMap<>();
 	private static final MessagingManager messagingManager = new MessagingManager();
-	
-	
+
 	private MessagingManager() {
 	}
 
@@ -32,23 +31,22 @@ public class MessagingManager {
 			System.out.println("Attempting to remove non-existing communication thread.");
 		}
 	}
-	
+
 	public void addCommunication(CommunicationInterface communication) {
 		allCommunicationThreads.add(communication);
 	}
-	
+
 	public void removeCommunication(CommunicationInterface communication) {
 		if (allCommunicationThreads.contains(communication)) {
 			allCommunicationThreads.remove(communication);
 		}
 	}
-	
+
 	public void closeAllCommunication() {
+		// TODO Fix the ConcurrentModificationException.
 		for (CommunicationInterface communication : allCommunicationThreads) {
 			communication.closeCommunication();
 		}
 	}
-	
-	
 
 }

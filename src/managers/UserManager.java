@@ -10,7 +10,7 @@ public class UserManager {
 
 	public static final long NO_USER = -1;
 
-	private static UserManager instance = new UserManager();
+	private final static UserManager instance = new UserManager();
 
 	private UserManager() {
 	}
