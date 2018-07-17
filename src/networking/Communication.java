@@ -4,19 +4,19 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.logging.Logger;
 
-import managers.MessagingManager;
-import managers.UserManager;
 import library.models.network.NetworkMessage;
 import library.networking.CommunicationInterface;
 import library.networking.CommunicationThreadFactory;
 import library.networking.InputThread;
 import library.networking.OutputThread;
 import library.util.MessagingLogger;
+import managers.MessagingManager;
+import managers.UserManager;
 
 public class Communication implements CommunicationInterface {
 
 	private static Logger logger = MessagingLogger.getLogger();
-	
+
 	private InputThread inputThread;
 	private OutputThread outputThread;
 	private Socket communicationSocket;
@@ -25,7 +25,7 @@ public class Communication implements CommunicationInterface {
 
 	public Communication(Socket communicationSocket) {
 		this.communicationSocket = communicationSocket;
-		
+
 		inputThread = CommunicationThreadFactory.createInputThread(communicationSocket);
 		outputThread = CommunicationThreadFactory.createOutputThread(communicationSocket);
 
@@ -37,16 +37,27 @@ public class Communication implements CommunicationInterface {
 	}
 
 	@Override
-	public void sendMessage(NetworkMessage  networkMessage) {
+	public void sendMessage(NetworkMessage networkMessage) {
 		outputThread.addMessage(networkMessage);
 	}
 
 	@Override
 	public void handleMessage(NetworkMessage networkMessage) {
 		switch (networkMessage.getType()) {
+		case CREATE_USER:
+			boolean success = UserManager.getInstance().createUser(networkMessage.getActor(),
+					networkMessage.getPasswordHash(), networkMessage.getEmail());
+
+			closeCommunication();
+			if (success) {
+				logger.info("User created successfully.");
+			} else {
+				logger.info("User creation failed.");
+			}
+			break;
+
 		case LOGIN:
-			long userId = UserManager.getInstance().login(networkMessage.getActor(),
-					networkMessage.getPasswordHash());
+			long userId = UserManager.getInstance().login(networkMessage.getActor(), networkMessage.getPasswordHash());
 
 			// TODO Generate and send a status response to the client.
 			if (userId > UserManager.NO_USER) {

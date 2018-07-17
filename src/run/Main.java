@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
-import exceptions.WrongMenuInputException;
 import managers.DatabaseManager;
 import managers.MessagingManager;
 import managers.NetworkManager;
 import models.data.User;
 import networking.ConnectionThreadSSLServer;
 import storage.ORM;
+import library.exceptions.WrongMenuInputException;
 import library.util.MessagingLogger;
 import library.util.Sha1Hash;
 
