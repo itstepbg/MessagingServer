@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import library.networking.CommunicationInterface;
+import library.util.MessagingLogger;
 
 public class MessagingManager {
 
@@ -28,7 +29,8 @@ public class MessagingManager {
 		if (loggedUserCommunicationMap.containsKey(userId)) {
 			loggedUserCommunicationMap.remove(userId);
 		} else {
-			System.out.println("Attempting to remove non-existing communication thread.");
+			MessagingLogger.getLogger()
+					.info("Attempting to remove non-existing communication for user " + userId + ".");
 		}
 	}
 

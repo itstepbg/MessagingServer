@@ -8,16 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 import managers.DatabaseManager;
+import managers.UserManager;
 import models.data.User;
 
 public class ORM {
-	// TODO
-	// insertUser name,pass,email
-	// deleteUser
-	// select * users
 
-	public static boolean insertUser(User user) {
-		boolean result = false;
+	public static long insertUser(User user) {
+		boolean success = false;
 		String name = user.getName();
 		String passwordHash = user.getPasswordHash();
 		String email = user.getEmail();
@@ -28,11 +25,17 @@ public class ORM {
 		userData.put(User.COLUMN_EMAIL, email);
 
 		try {
-			result = DatabaseManager.getInstance().insert(User.TABLE_NAME, userData);
+			success = DatabaseManager.getInstance().insert(User.TABLE_NAME, userData);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return result;
+
+		long userId = UserManager.NO_USER;
+		if (success) {
+			userId = selectUser(name, email).getUserId();
+		}
+
+		return userId;
 	}
 
 	public static boolean deleteUser(User user) {

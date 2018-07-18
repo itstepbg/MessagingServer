@@ -44,41 +44,46 @@ public class Communication implements CommunicationInterface {
 
 	@Override
 	public void handleMessage(NetworkMessage networkMessage) {
+		NetworkMessage statusMessage;
+		long userId;
+
 		switch (networkMessage.getType()) {
 		case CREATE_USER:
-			boolean success = UserManager.getInstance().createUser(networkMessage.getActor(),
-					networkMessage.getPasswordHash(), networkMessage.getEmail());
+			userId = UserManager.getInstance().createUser(networkMessage.getActor(), networkMessage.getPasswordHash(),
+					networkMessage.getEmail());
 
-			// TODO Generate and send a status response to the client.
-			NetworkMessage statusMessage = new NetworkMessage();
+			statusMessage = new NetworkMessage();
 			statusMessage.setType(MessageType.STATUS_RESPONSE);
 
-			if (success) {
-				statusMessage.setStatus(NetworkMessage.SUCCESS);
-				logger.info("User created successfully.");
+			if (userId > UserManager.NO_USER) {
+				statusMessage.setStatus(NetworkMessage.STATUS_OK);
+				logger.info("User " + userId + " successfully.");
 			} else {
-				statusMessage.setStatus(NetworkMessage.ERROR_CREATE_USER);
+				statusMessage.setStatus(NetworkMessage.STATUS_ERROR_CREATING_USER);
 				logger.info("User creation failed.");
 			}
 			sendMessage(statusMessage);
 			break;
-
 		case LOGIN:
-			long userId = UserManager.getInstance().login(networkMessage.getActor(), networkMessage.getPasswordHash());
+			userId = UserManager.getInstance().login(networkMessage.getActor(), networkMessage.getPasswordHash());
 
-			// TODO Generate and send a status response to the client.
+			statusMessage = new NetworkMessage();
+			statusMessage.setType(MessageType.STATUS_RESPONSE);
+
 			if (userId > UserManager.NO_USER) {
+				this.userId = userId;
 				MessagingManager.getInstance().addLoggedUserInMap(userId, this);
 				logger.info("User " + userId + " logged in!");
+				statusMessage.setStatus(NetworkMessage.STATUS_OK);
 			} else {
-				closeCommunication();
 				logger.info("User login error.");
+				statusMessage.setStatus(NetworkMessage.STATUS_ERROR_LOGGING_IN);
 			}
+			sendMessage(statusMessage);
 			break;
-		// The explicit LOGOUT may be redundant, due to the fact that closing the
-		// client-side socket handles this.
 		case LOGOUT:
-			closeCommunication();
+			MessagingManager.getInstance().removeLoggedUserFromMap(this.userId);
+			this.userId = UserManager.NO_USER;
 			break;
 		default:
 			break;

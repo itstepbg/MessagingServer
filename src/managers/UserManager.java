@@ -23,7 +23,7 @@ public class UserManager {
 	 * TODO create remove get all users get single user login and others ...
 	 */
 
-	public boolean createUser(String name, String passwordHash, String email) {
+	public long createUser(String name, String passwordHash, String email) {
 		User user = new User(name, passwordHash, email);
 		return ORM.insertUser(user);
 	}

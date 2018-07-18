@@ -4,15 +4,16 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
-import managers.DatabaseManager;
-import managers.MessagingManager;
-import managers.NetworkManager;
-import models.data.User;
-import networking.ConnectionThreadSSLServer;
-import storage.ORM;
 import library.exceptions.WrongMenuInputException;
 import library.util.MessagingLogger;
 import library.util.Sha1Hash;
+import managers.DatabaseManager;
+import managers.MessagingManager;
+import managers.NetworkManager;
+import managers.UserManager;
+import models.data.User;
+import networking.ConnectionThreadSSLServer;
+import storage.ORM;
 
 public class Main {
 	private static Scanner sc = new Scanner(System.in);
@@ -24,8 +25,8 @@ public class Main {
 	private static ConnectionThreadSSLServer sslThread;
 
 	public static void main(String[] args) {
-//		sslThread = new ConnectionThreadSSLServer();
-//		sslThread.runServer();
+		// sslThread = new ConnectionThreadSSLServer();
+		// sslThread.runServer();
 		databaseManager = DatabaseManager.getInstance();
 		networkManager = new NetworkManager();
 		networkManager.startConnectionThread(3000);
@@ -44,7 +45,13 @@ public class Main {
 		System.out.println("3. Exit");
 		System.out.println();
 
-		int inputOption = Integer.parseInt(sc.nextLine());
+		String command = sc.nextLine();
+		while (command.equals("")) {
+			System.out.println();
+			command = sc.nextLine();
+		}
+
+		int inputOption = Integer.parseInt(command);
 
 		try {
 			manageUserInput(inputOption);
@@ -125,10 +132,12 @@ public class Main {
 		String email = sc.nextLine();
 
 		User user = new User(name, passwrodHash, email);
-		if (ORM.insertUser(user)) {
-			logger.info("User created");
+		long userId = ORM.insertUser(user);
+
+		if (userId > UserManager.NO_USER) {
+			logger.info("User " + userId + " created.");
 		} else {
-			logger.info("Username or email already exists");
+			logger.info("Username or email already exists.");
 			createUser();
 		}
 	}

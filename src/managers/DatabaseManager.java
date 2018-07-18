@@ -11,9 +11,9 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import exceptions.InvalidWhereClauseException;
+import library.util.MessagingLogger;
 import storage.SqlData;
 import storage.WCB;
-import library.util.MessagingLogger;
 
 public class DatabaseManager {
 	private static final String JDB_DATABASE = "piraty_chat_client";
