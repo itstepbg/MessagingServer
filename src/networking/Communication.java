@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.logging.Logger;
 
+import library.models.network.MessageType;
 import library.models.network.NetworkMessage;
 import library.networking.CommunicationInterface;
 import library.networking.CommunicationThreadFactory;
@@ -49,11 +50,17 @@ public class Communication implements CommunicationInterface {
 					networkMessage.getPasswordHash(), networkMessage.getEmail());
 
 			// TODO Generate and send a status response to the client.
+			NetworkMessage statusMessage = new NetworkMessage();
+			statusMessage.setType(MessageType.STATUS_RESPONSE);
+
 			if (success) {
+				statusMessage.setStatus(NetworkMessage.SUCCESS);
 				logger.info("User created successfully.");
 			} else {
+				statusMessage.setStatus(NetworkMessage.ERROR_CREATE_USER);
 				logger.info("User creation failed.");
 			}
+			sendMessage(statusMessage);
 			break;
 
 		case LOGIN:
