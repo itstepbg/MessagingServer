@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import library.models.network.MessageType;
 import library.models.network.NetworkMessage;
+import library.networking.CommonCommunication;
 import library.networking.CommunicationInterface;
 import library.networking.CommunicationThreadFactory;
 import library.networking.InputThread;
@@ -14,7 +15,7 @@ import library.util.MessagingLogger;
 import managers.MessagingManager;
 import managers.UserManager;
 
-public class Communication implements CommunicationInterface {
+public class Communication extends CommonCommunication implements CommunicationInterface {
 
 	private static Logger logger = MessagingLogger.getLogger();
 
@@ -39,6 +40,7 @@ public class Communication implements CommunicationInterface {
 
 	@Override
 	public void sendMessage(NetworkMessage networkMessage) {
+		updateMessageCounter(networkMessage);
 		outputThread.addMessage(networkMessage);
 	}
 
@@ -54,6 +56,7 @@ public class Communication implements CommunicationInterface {
 
 			statusMessage = new NetworkMessage();
 			statusMessage.setType(MessageType.STATUS_RESPONSE);
+			statusMessage.setMessageId(networkMessage.getMessageId());
 
 			if (userId > UserManager.NO_USER) {
 				statusMessage.setStatus(NetworkMessage.STATUS_OK);
@@ -69,6 +72,7 @@ public class Communication implements CommunicationInterface {
 
 			statusMessage = new NetworkMessage();
 			statusMessage.setType(MessageType.STATUS_RESPONSE);
+			statusMessage.setMessageId(networkMessage.getMessageId());
 
 			if (userId > UserManager.NO_USER) {
 				this.userId = userId;
@@ -82,6 +86,7 @@ public class Communication implements CommunicationInterface {
 			sendMessage(statusMessage);
 			break;
 		case LOGOUT:
+			// TODO Add status response.
 			MessagingManager.getInstance().removeLoggedUserFromMap(this.userId);
 			this.userId = UserManager.NO_USER;
 			break;
