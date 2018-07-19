@@ -3,7 +3,7 @@ package managers;
 import java.util.Collections;
 import java.util.List;
 
-import models.data.User;
+import library.models.data.User;
 import storage.ORM;
 
 public class UserManager {

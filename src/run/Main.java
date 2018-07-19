@@ -5,13 +5,13 @@ import java.util.Scanner;
 import java.util.logging.Logger;
 
 import library.exceptions.WrongMenuInputException;
+import library.models.data.User;
 import library.util.MessagingLogger;
 import library.util.Sha1Hash;
 import managers.DatabaseManager;
 import managers.MessagingManager;
 import managers.NetworkManager;
 import managers.UserManager;
-import models.data.User;
 import networking.ConnectionThreadSSLServer;
 import storage.ORM;
 

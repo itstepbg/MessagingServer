@@ -86,9 +86,15 @@ public class Communication extends CommonCommunication implements CommunicationI
 			sendMessage(statusMessage);
 			break;
 		case LOGOUT:
-			// TODO Add status response.
+			statusMessage = new NetworkMessage();
+			statusMessage.setType(MessageType.STATUS_RESPONSE);
+			statusMessage.setStatus(NetworkMessage.STATUS_OK);
+			statusMessage.setMessageId(networkMessage.getMessageId());
+
+			logger.info("User logged out.");
 			MessagingManager.getInstance().removeLoggedUserFromMap(this.userId);
 			this.userId = UserManager.NO_USER;
+			sendMessage(statusMessage);
 			break;
 		default:
 			break;

@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import library.models.data.User;
 import managers.DatabaseManager;
 import managers.UserManager;
-import models.data.User;
 
 public class ORM {
 
