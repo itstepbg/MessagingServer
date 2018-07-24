@@ -2,40 +2,21 @@ package networking;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.logging.Logger;
 
 import library.models.network.MessageType;
 import library.models.network.NetworkMessage;
 import library.networking.CommonCommunication;
 import library.networking.CommunicationInterface;
-import library.networking.CommunicationThreadFactory;
-import library.networking.InputThread;
-import library.networking.OutputThread;
-import library.util.MessagingLogger;
 import managers.MessagingManager;
 import managers.UserManager;
 
 public class Communication extends CommonCommunication implements CommunicationInterface {
 
-	private static Logger logger = MessagingLogger.getLogger();
-
-	private InputThread inputThread;
-	private OutputThread outputThread;
-	private Socket communicationSocket;
-
 	private Long userId = UserManager.NO_USER;
 
 	public Communication(Socket communicationSocket) {
-		this.communicationSocket = communicationSocket;
-
-		inputThread = CommunicationThreadFactory.createInputThread(communicationSocket);
-		outputThread = CommunicationThreadFactory.createOutputThread(communicationSocket);
-
-		inputThread.setCommunicationListener(this);
-		outputThread.setCommunicationListener(this);
-
-		inputThread.start();
-		outputThread.start();
+		super(communicationSocket);
+		startCommunicationThreads(this);
 	}
 
 	@Override
@@ -50,6 +31,9 @@ public class Communication extends CommonCommunication implements CommunicationI
 		long userId;
 
 		switch (networkMessage.getType()) {
+		case HEARTBEAT:
+			heartbeatThread.resetTimeoutBuffer();
+			break;
 		case CREATE_USER:
 			userId = UserManager.getInstance().createUser(networkMessage.getActor(), networkMessage.getPasswordHash(),
 					networkMessage.getEmail());

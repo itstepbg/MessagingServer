@@ -126,12 +126,12 @@ public class Main {
 		System.out.println("Please enter password:");
 		String password = sc.nextLine();
 
-		String passwrodHash = Sha1Hash.generateHash(password);
+		String passwordHash = Sha1Hash.generateHash(password);
 
 		System.out.println("Please enter email:");
 		String email = sc.nextLine();
 
-		User user = new User(name, passwrodHash, email);
+		User user = new User(name, passwordHash, email);
 		long userId = ORM.insertUser(user);
 
 		if (userId > UserManager.NO_USER) {
