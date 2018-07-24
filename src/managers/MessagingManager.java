@@ -45,7 +45,6 @@ public class MessagingManager {
 	}
 
 	public void closeAllCommunication() {
-		// TODO Fix the ConcurrentModificationException.
 		for (CommunicationInterface communication : allCommunicationThreads) {
 			communication.closeCommunication();
 		}

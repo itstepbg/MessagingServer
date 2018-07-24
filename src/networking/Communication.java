@@ -85,21 +85,25 @@ public class Communication extends CommonCommunication implements CommunicationI
 		}
 	}
 
-	// TODO There should be a separate closeSocket() method
-	// that should be called from the MessagingManager instead.
 	@Override
 	public void closeCommunication() {
 		logger.info("Closing communication for " + communicationSocket.getInetAddress().getHostAddress());
 
+		heartbeatThread.interrupt();
+
 		if (!communicationSocket.isClosed()) {
 			try {
 				communicationSocket.close();
-
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public void unregisterCommunication() {
+		closeCommunication();
 
 		if (userId != UserManager.NO_USER) {
 			MessagingManager.getInstance().removeLoggedUserFromMap(userId);
@@ -107,4 +111,5 @@ public class Communication extends CommonCommunication implements CommunicationI
 
 		MessagingManager.getInstance().removeCommunication(this);
 	}
+
 }
