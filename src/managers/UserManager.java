@@ -8,6 +8,7 @@ import storage.ORM;
 
 public class UserManager {
 
+	public static final String USER_FILES_DIRECTORY = "\\userDirectories\\";
 	public static final long NO_USER = -1;
 
 	private final static UserManager instance = new UserManager();

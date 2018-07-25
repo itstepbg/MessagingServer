@@ -7,6 +7,7 @@ import library.models.network.MessageType;
 import library.models.network.NetworkMessage;
 import library.networking.CommonCommunication;
 import library.networking.CommunicationInterface;
+import library.util.FileUtils;
 import managers.MessagingManager;
 import managers.UserManager;
 
@@ -45,6 +46,7 @@ public class Communication extends CommonCommunication implements CommunicationI
 			if (userId > UserManager.NO_USER) {
 				statusMessage.setStatus(NetworkMessage.STATUS_OK);
 				logger.info("User " + userId + " successfully.");
+				FileUtils.createDirectory(UserManager.USER_FILES_DIRECTORY + networkMessage.getActor());
 			} else {
 				statusMessage.setStatus(NetworkMessage.STATUS_ERROR_CREATING_USER);
 				logger.info("User creation failed.");
