@@ -1,6 +1,7 @@
 package managers;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import library.models.data.User;
@@ -8,10 +9,12 @@ import storage.ORM;
 
 public class UserManager {
 
-	public static final String USER_FILES_DIRECTORY = "\\userDirectories\\";
+	public static final String USER_FILES_DIRECTORY = "userDirectories\\";
 	public static final long NO_USER = -1;
 
 	private final static UserManager instance = new UserManager();
+
+	private HashMap<Long, User> loggedUsers = new HashMap<>();
 
 	private UserManager() {
 	}
@@ -19,10 +22,6 @@ public class UserManager {
 	public static UserManager getInstance() {
 		return instance;
 	}
-
-	/*
-	 * TODO create remove get all users get single user login and others ...
-	 */
 
 	public long createUser(String name, String passwordHash, String email) {
 		User user = new User(name, passwordHash, email);
@@ -42,18 +41,25 @@ public class UserManager {
 		return ORM.selectUser(keyword, keyword);
 	}
 
-	public long login(String name, String passwordHash) {
+	public User getLoggedInUser(Long userId) {
+		return loggedUsers.get(userId);
+	}
 
+	public long login(String name, String passwordHash) {
 		User user = getUser(name);
 
 		if (user == null) {
 			return NO_USER;
 		} else {
 			if (user.getPasswordHash().equals(passwordHash)) {
+				loggedUsers.put(user.getUserId(), user);
 				return user.getUserId();
 			}
 			return NO_USER;
 		}
 	}
 
+	public void logout(long userId) {
+		loggedUsers.remove(userId);
+	}
 }

@@ -79,8 +79,17 @@ public class Communication extends CommonCommunication implements CommunicationI
 
 			logger.info("User logged out.");
 			MessagingManager.getInstance().removeLoggedUserFromMap(this.userId);
+			UserManager.getInstance().logout(this.userId);
 			this.userId = UserManager.NO_USER;
 			sendMessage(statusMessage);
+			break;
+		case UPLOAD_FILE:
+			String localFilePath = UserManager.USER_FILES_DIRECTORY
+					+ UserManager.getInstance().getLoggedInUser(this.userId) + "\\" + networkMessage.getFilePath();
+			handleIncomingFile(this, localFilePath);
+			break;
+		case UPLOAD_CHUNK:
+			handleFileChunk(this, networkMessage.getText());
 			break;
 		default:
 			break;
@@ -92,6 +101,10 @@ public class Communication extends CommonCommunication implements CommunicationI
 		logger.info("Closing communication for " + communicationSocket.getInetAddress().getHostAddress());
 
 		heartbeatThread.interrupt();
+		// TODO Maybe the file thread reference should be removed when it dies?
+		if (fileThread != null && fileThread.isAlive()) {
+			fileThread.interrupt();
+		}
 
 		if (!communicationSocket.isClosed()) {
 			try {
