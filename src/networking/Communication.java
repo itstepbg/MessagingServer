@@ -1,33 +1,26 @@
 package networking;
 
-import java.io.IOException;
 import java.net.Socket;
 
 import library.models.network.MessageType;
 import library.models.network.NetworkMessage;
 import library.networking.CommonCommunication;
-import library.networking.CommunicationInterface;
 import library.util.FileUtils;
 import managers.MessagingManager;
 import managers.UserManager;
 
-public class Communication extends CommonCommunication implements CommunicationInterface {
+public class Communication extends CommonCommunication {
 
 	private Long userId = UserManager.NO_USER;
 
 	public Communication(Socket communicationSocket) {
 		super(communicationSocket);
-		startCommunicationThreads(this);
-	}
-
-	@Override
-	public void sendMessage(NetworkMessage networkMessage) {
-		updateMessageCounter(networkMessage);
-		outputThread.addMessage(networkMessage);
 	}
 
 	@Override
 	public void handleMessage(NetworkMessage networkMessage) {
+		super.handleMessage(networkMessage);
+
 		NetworkMessage statusMessage;
 		long userId;
 
@@ -86,10 +79,10 @@ public class Communication extends CommonCommunication implements CommunicationI
 		case UPLOAD_FILE:
 			String localFilePath = UserManager.USER_FILES_DIRECTORY
 					+ UserManager.getInstance().getLoggedInUser(this.userId) + "\\" + networkMessage.getFilePath();
-			handleIncomingFile(this, localFilePath);
+			handleIncomingFile(localFilePath);
 			break;
 		case UPLOAD_CHUNK:
-			handleFileChunk(this, networkMessage.getText());
+			handleFileChunk(networkMessage.getText());
 			break;
 		default:
 			break;
@@ -97,28 +90,8 @@ public class Communication extends CommonCommunication implements CommunicationI
 	}
 
 	@Override
-	public void closeCommunication() {
-		logger.info("Closing communication for " + communicationSocket.getInetAddress().getHostAddress());
-
-		heartbeatThread.interrupt();
-		// TODO Maybe the file thread reference should be removed when it dies?
-		if (fileThread != null && fileThread.isAlive()) {
-			fileThread.interrupt();
-		}
-
-		if (!communicationSocket.isClosed()) {
-			try {
-				communicationSocket.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-
-	@Override
 	public void unregisterCommunication() {
-		closeCommunication();
+		super.unregisterCommunication();
 
 		if (userId != UserManager.NO_USER) {
 			MessagingManager.getInstance().removeLoggedUserFromMap(userId);

@@ -5,8 +5,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Logger;
 
-import managers.MessagingManager;
 import library.util.MessagingLogger;
+import managers.MessagingManager;
 
 public class ConnectionThread extends Thread {
 
@@ -29,10 +29,9 @@ public class ConnectionThread extends Thread {
 		while (!Thread.interrupted()) {
 			try {
 				Socket communicationSocket = connectionSocket.accept();
-				communicationSocket.setSoTimeout(2000);
+				// communicationSocket.setSoTimeout(2000);
 				logger.info("New connection from " + communicationSocket.getInetAddress().getHostAddress());
-				MessagingManager.getInstance()
-				.addCommunication(new Communication(communicationSocket));
+				MessagingManager.getInstance().addCommunication(new Communication(communicationSocket));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
