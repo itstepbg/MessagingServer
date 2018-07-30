@@ -11,6 +11,7 @@ import managers.UserManager;
 
 public class Communication extends CommonCommunication {
 
+	// TODO This should be moved to the CommonCommunication class.
 	private Long userId = UserManager.NO_USER;
 
 	public Communication(Socket communicationSocket) {
@@ -25,9 +26,6 @@ public class Communication extends CommonCommunication {
 		long userId;
 
 		switch (networkMessage.getType()) {
-		case HEARTBEAT:
-			heartbeatThread.resetTimeoutBuffer();
-			break;
 		case CREATE_USER:
 			userId = UserManager.getInstance().createUser(networkMessage.getActor(), networkMessage.getPasswordHash(),
 					networkMessage.getEmail());
@@ -78,7 +76,8 @@ public class Communication extends CommonCommunication {
 			break;
 		case UPLOAD_FILE:
 			String localFilePath = UserManager.USER_FILES_DIRECTORY
-					+ UserManager.getInstance().getLoggedInUser(this.userId) + "\\" + networkMessage.getFilePath();
+					+ UserManager.getInstance().getLoggedInUser(this.userId).getName() + "\\"
+					+ networkMessage.getFilePath();
 			handleIncomingFile(localFilePath);
 			break;
 		case UPLOAD_CHUNK:
