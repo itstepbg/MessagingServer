@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import library.models.data.User;
+import library.util.Crypto;
 import storage.ORM;
 
 public class UserManager {
@@ -45,13 +46,15 @@ public class UserManager {
 		return loggedUsers.get(userId);
 	}
 
-	public long login(String name, String passwordHash) {
+	public long login(String salt, String name, String passwordHash) {
 		User user = getUser(name);
 
 		if (user == null) {
 			return NO_USER;
 		} else {
-			if (user.getPasswordHash().equals(passwordHash)) {
+			// The iterations are hardcoded for now.
+			String saltedPassword = Crypto.saltPassword(salt, user.getPasswordHash(), 1024);
+			if (saltedPassword.equals(passwordHash)) {
 				loggedUsers.put(user.getUserId(), user);
 				return user.getUserId();
 			}

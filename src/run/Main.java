@@ -6,8 +6,8 @@ import java.util.logging.Logger;
 
 import library.exceptions.WrongMenuInputException;
 import library.models.data.User;
+import library.util.Crypto;
 import library.util.MessagingLogger;
-import library.util.Sha1Hash;
 import managers.DatabaseManager;
 import managers.MessagingManager;
 import managers.NetworkManager;
@@ -126,7 +126,7 @@ public class Main {
 		System.out.println("Please enter password:");
 		String password = sc.nextLine();
 
-		String passwordHash = Sha1Hash.generateHash(password);
+		String passwordHash = Crypto.generateHash(password);
 
 		System.out.println("Please enter email:");
 		String email = sc.nextLine();

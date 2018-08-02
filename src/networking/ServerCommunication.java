@@ -4,17 +4,17 @@ import java.net.Socket;
 
 import library.models.network.MessageType;
 import library.models.network.NetworkMessage;
-import library.networking.CommonCommunication;
+import library.networking.Communication;
 import library.util.FileUtils;
 import managers.MessagingManager;
 import managers.UserManager;
 
-public class Communication extends CommonCommunication {
+public class ServerCommunication extends Communication {
 
 	// TODO This should be moved to the CommonCommunication class.
 	private Long userId = UserManager.NO_USER;
 
-	public Communication(Socket communicationSocket) {
+	public ServerCommunication(Socket communicationSocket) {
 		super(communicationSocket);
 	}
 
@@ -45,7 +45,7 @@ public class Communication extends CommonCommunication {
 			sendMessage(statusMessage);
 			break;
 		case LOGIN:
-			userId = UserManager.getInstance().login(networkMessage.getActor(), networkMessage.getPasswordHash());
+			userId = UserManager.getInstance().login(salt, networkMessage.getActor(), networkMessage.getPasswordHash());
 
 			statusMessage = new NetworkMessage();
 			statusMessage.setType(MessageType.STATUS_RESPONSE);
