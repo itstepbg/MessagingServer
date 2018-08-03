@@ -29,6 +29,8 @@ public class ServerCommunication extends Communication {
 		case CREATE_USER:
 			userId = UserManager.getInstance().createUser(networkMessage.getActor(), networkMessage.getPasswordHash(),
 					networkMessage.getEmail());
+			String userDirectoryPath = UserManager.USER_FILES_DIRECTORY +
+					networkMessage.getActor();
 
 			statusMessage = new NetworkMessage();
 			statusMessage.setType(MessageType.STATUS_RESPONSE);
@@ -36,8 +38,11 @@ public class ServerCommunication extends Communication {
 
 			if (userId > UserManager.NO_USER) {
 				statusMessage.setStatus(NetworkMessage.STATUS_OK);
-				logger.info("User " + userId + " successfully.");
-				FileUtils.createDirectory(UserManager.USER_FILES_DIRECTORY + networkMessage.getActor());
+
+				if (FileUtils.createDirectory(userDirectoryPath) == false) {
+					FileUtils.createDirectory(userDirectoryPath);
+				}
+				logger.info("User " + userId + " created successfully.");
 			} else {
 				statusMessage.setStatus(NetworkMessage.STATUS_ERROR_CREATING_USER);
 				logger.info("User creation failed.");
@@ -82,6 +87,57 @@ public class ServerCommunication extends Communication {
 			break;
 		case UPLOAD_CHUNK:
 			handleFileChunk(networkMessage.getText());
+			break;
+		case DELETE_FILE:
+			statusMessage = new NetworkMessage();
+			statusMessage.setType(MessageType.STATUS_RESPONSE);
+			String filePath = UserManager.USER_FILES_DIRECTORY
+					+ UserManager.getInstance().getLoggedInUser(this.userId).getName() + "\\"
+					+ networkMessage.getFilePath();
+			if (FileUtils.deleteFile(filePath) == true) {
+				statusMessage.setStatus(NetworkMessage.STATUS_OK);
+			}
+			else {
+				statusMessage.setStatus(NetworkMessage.STATUS_ERROR_DELETING_FILE);
+			}
+			statusMessage.setMessageId(networkMessage.getMessageId());
+			break;
+		case COPY_FILE:
+			statusMessage = new NetworkMessage();
+			statusMessage.setType(MessageType.STATUS_RESPONSE);
+			String sourcePath = UserManager.USER_FILES_DIRECTORY
+					+ UserManager.getInstance().getLoggedInUser(this.userId).getName() + "\\"
+					+ networkMessage.getFilePath();
+			String targetPath = UserManager.USER_FILES_DIRECTORY
+					+ UserManager.getInstance().getLoggedInUser(this.userId).getName() + "\\"
+					+ networkMessage.getNewFilePath();
+			if (FileUtils.copyFile(sourcePath, targetPath) == true) {
+				statusMessage.setStatus(NetworkMessage.STATUS_OK);
+			}
+			else {
+				statusMessage.setStatus(NetworkMessage.STATUS_ERROR_COPYING_FILE);
+			}
+			statusMessage.setMessageId(networkMessage.getMessageId());
+			break;
+		case CREATE_DIRECTORY:
+			statusMessage = new NetworkMessage();
+            statusMessage.setType(MessageType.STATUS_RESPONSE);
+
+            String directoryPath = UserManager.USER_FILES_DIRECTORY
+                    + UserManager.getInstance().getLoggedInUser(this.userId).getName() + "\\"
+                    + networkMessage.getFilePath();
+
+            if (FileUtils.createDirectory(directoryPath) == true) {
+                statusMessage.setStatus(NetworkMessage.STATUS_OK);
+                FileUtils.createDirectory(directoryPath);
+            }
+
+            else {
+                statusMessage.setStatus(NetworkMessage.STATUS_ERROR_CREATING_DIRECTORY);
+            }
+
+            statusMessage.setMessageId(networkMessage.getMessageId());
+            sendMessage(statusMessage);
 			break;
 		default:
 			break;

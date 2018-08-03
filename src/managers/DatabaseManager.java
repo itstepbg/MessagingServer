@@ -17,9 +17,9 @@ import storage.WCB;
 
 public class DatabaseManager {
 	private static final String JDB_DATABASE = "piraty_chat_client";
-	private static final String DB_URL = "jdbc:mysql://18.184.169.162:3306/" + JDB_DATABASE;
-	private static final String DB_USER = "chatServer";
-	private static final String DB_PASS = "testPassword";
+	private static final String DB_URL = "jdbc:mysql://localhost:3306/" + JDB_DATABASE;
+	private static final String DB_USER = "root";
+	private static final String DB_PASS = "1234";
 	private static Logger logger = MessagingLogger.getLogger();
 
 	private Connection dbConnection = null;
