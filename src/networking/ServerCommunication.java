@@ -93,28 +93,32 @@ public class ServerCommunication extends Communication {
 			String filePath = UserManager.USER_FILES_DIRECTORY
 					+ UserManager.getInstance().getLoggedInUser(this.userId).getName() + "\\"
 					+ networkMessage.getFilePath();
+
 			if (FileUtils.deleteFile(filePath) == true) {
 				statusMessage.setStatus(NetworkMessage.STATUS_OK);
 			} else {
 				statusMessage.setStatus(NetworkMessage.STATUS_ERROR_DELETING_FILE);
 			}
+
 			statusMessage.setMessageId(networkMessage.getMessageId());
+			sendMessage(statusMessage);
 			break;
 		case COPY_FILE:
 			statusMessage = new NetworkMessage();
 			statusMessage.setType(MessageType.STATUS_RESPONSE);
-			String sourcePath = UserManager.USER_FILES_DIRECTORY
-					+ UserManager.getInstance().getLoggedInUser(this.userId).getName() + "\\"
-					+ networkMessage.getFilePath();
-			String targetPath = UserManager.USER_FILES_DIRECTORY
-					+ UserManager.getInstance().getLoggedInUser(this.userId).getName() + "\\"
-					+ networkMessage.getNewFilePath();
-			if (FileUtils.copyFile(sourcePath, targetPath) == true) {
-				statusMessage.setStatus(NetworkMessage.STATUS_OK);
-			} else {
-				statusMessage.setStatus(NetworkMessage.STATUS_ERROR_COPYING_FILE);
-			}
+
+			String sourcePath = networkMessage.getFilePath();
+			String targetPath = networkMessage.getNewFilePath();
+
+			// if (FileUtils.copyFile(sourcePath, targetPath) == true) {
+			FileUtils.copyFile(sourcePath, targetPath);
+			statusMessage.setStatus(NetworkMessage.STATUS_OK);
+			// } else {
+			// statusMessage.setStatus(NetworkMessage.STATUS_ERROR_COPYING_FILE);
+			// }
+
 			statusMessage.setMessageId(networkMessage.getMessageId());
+			sendMessage(statusMessage);
 			break;
 		case CREATE_DIRECTORY:
 			statusMessage = new NetworkMessage();
@@ -126,7 +130,7 @@ public class ServerCommunication extends Communication {
 
 			if (FileUtils.createDirectory(directoryPath) == true) {
 				statusMessage.setStatus(NetworkMessage.STATUS_OK);
-				FileUtils.createDirectory(directoryPath);
+				// FileUtils.createDirectory(directoryPath);
 			}
 
 			else {
