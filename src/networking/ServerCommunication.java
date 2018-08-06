@@ -90,9 +90,7 @@ public class ServerCommunication extends Communication {
 		case DELETE_FILE:
 			statusMessage = new NetworkMessage();
 			statusMessage.setType(MessageType.STATUS_RESPONSE);
-			String filePath = UserManager.USER_FILES_DIRECTORY
-					+ UserManager.getInstance().getLoggedInUser(this.userId).getName() + "\\"
-					+ networkMessage.getFilePath();
+			String filePath = networkMessage.getFilePath();
 
 			if (FileUtils.deleteFile(filePath) == true) {
 				statusMessage.setStatus(NetworkMessage.STATUS_OK);
@@ -110,12 +108,11 @@ public class ServerCommunication extends Communication {
 			String sourcePath = networkMessage.getFilePath();
 			String targetPath = networkMessage.getNewFilePath();
 
-			// if (FileUtils.copyFile(sourcePath, targetPath) == true) {
-			FileUtils.copyFile(sourcePath, targetPath);
-			statusMessage.setStatus(NetworkMessage.STATUS_OK);
-			// } else {
-			// statusMessage.setStatus(NetworkMessage.STATUS_ERROR_COPYING_FILE);
-			// }
+			if (FileUtils.copyFile(sourcePath, targetPath) == true) {
+				statusMessage.setStatus(NetworkMessage.STATUS_OK);
+			} else {
+				statusMessage.setStatus(NetworkMessage.STATUS_ERROR_COPYING_FILE);
+			}
 
 			statusMessage.setMessageId(networkMessage.getMessageId());
 			sendMessage(statusMessage);
