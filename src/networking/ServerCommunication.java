@@ -2,7 +2,6 @@ package networking;
 
 import java.net.Socket;
 
-import FTPLibrary.FTPConstants;
 import library.models.network.MessageType;
 import library.models.network.NetworkMessage;
 import library.networking.Communication;
@@ -27,14 +26,6 @@ public class ServerCommunication extends Communication {
 		long userId;
 
 		switch (networkMessage.getType()) {
-		case CLIENT_HELLO:
-			logger.info("Client Hello message recieved with FQDN " + networkMessage.getClientFQDN());
-			NetworkMessage serverResponse = new NetworkMessage();
-			serverResponse.setType(MessageType.WELCOME_MESSAGE);
-			serverResponse.setClientFQDN(networkMessage.getClientFQDN());
-			serverResponse.setText(FTPConstants.SERVER_WELCOME + " " + "<<" + networkMessage.getClientFQDN() + ">>");
-			sendMessage(serverResponse);
-			break;
 		case CREATE_USER:
 			userId = UserManager.getInstance().createUser(networkMessage.getActor(), networkMessage.getPasswordHash(),
 					networkMessage.getEmail());

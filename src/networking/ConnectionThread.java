@@ -43,14 +43,9 @@ public class ConnectionThread extends Thread {
 				NetworkMessage networkMessage = new NetworkMessage();
 				networkMessage.setType(MessageType.SALT);
 				networkMessage.setText(salt);
+
 				newCommunication.setSalt(salt);
 				newCommunication.sendMessage(networkMessage);
-
-				// send server hello
-				NetworkMessage helloMessage = new NetworkMessage();
-				helloMessage.setType(MessageType.SERVER_HELLO);
-				helloMessage.setText(FTPLibrary.FTPConstants.SERVER_HELLO_MESSAGE);
-				newCommunication.sendMessage(helloMessage);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

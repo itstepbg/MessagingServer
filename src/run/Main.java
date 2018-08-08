@@ -38,9 +38,6 @@ public class Main {
 
 	// listed in issue #1
 	public static void chooseMenuOption() {
-
-		// Handshake
-
 		System.out.println();
 		System.out.println("0. Create User");
 		System.out.println("1. Delete User");
