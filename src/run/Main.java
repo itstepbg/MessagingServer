@@ -41,7 +41,6 @@ public class Main {
 
 		// Handshake
 
-		System.out.println("testing new branch");
 		System.out.println();
 		System.out.println("0. Create User");
 		System.out.println("1. Delete User");
