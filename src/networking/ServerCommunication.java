@@ -1,12 +1,15 @@
 package networking;
 
 import java.net.Socket;
+import java.util.Base64;
 
 import FTPLibrary.FTPConstants;
 import library.models.network.MessageType;
 import library.models.network.NetworkMessage;
 import library.networking.Communication;
+import library.util.Crypto;
 import library.util.FileUtils;
+import library.util.ConstantsFTP;
 import managers.MessagingManager;
 import managers.UserManager;
 
@@ -14,6 +17,8 @@ public class ServerCommunication extends Communication {
 
 	// TODO This should be moved to the CommonCommunication class.
 	private Long userId = UserManager.NO_USER;
+	private String communicationSalt;
+	private int iterations;
 
 	public ServerCommunication(Socket communicationSocket) {
 		super(communicationSocket);
@@ -31,10 +36,47 @@ public class ServerCommunication extends Communication {
 			logger.info("Client Hello message recieved with FQDN " + networkMessage.getClientFQDN());
 			NetworkMessage serverResponse = new NetworkMessage();
 			serverResponse.setType(MessageType.WELCOME_MESSAGE);
+			serverResponse.setMessageId(networkMessage.getMessageId());
 			serverResponse.setClientFQDN(networkMessage.getClientFQDN());
 			serverResponse.setText(FTPConstants.SERVER_WELCOME + " " + "<<" + networkMessage.getClientFQDN() + ">>");
 			sendMessage(serverResponse);
 			break;
+
+		case REGISTER_PLAIN:
+			logger.info("Plain registration request.");
+			System.out.println("Plain registration request.");
+			statusMessage = new NetworkMessage();
+			statusMessage.setType(MessageType.CONTINUE_WITH_PASS);
+			statusMessage.setMessageId(networkMessage.getMessageId());
+
+			communicationSalt = Base64.getEncoder().encodeToString(Crypto.generateRandomSalt());
+			iterations = Crypto.getRandomIterations();
+
+			statusMessage.setSalt(communicationSalt);
+			statusMessage.setIterations(iterations);
+			System.out.println("sends CONTINUE_WITH_PASS");
+			sendMessage(statusMessage);
+			break;
+
+		case REGISTER_PASS:
+			logger.info("Registration password delivered");
+
+			String registerPassword = Crypto.saltPassword(communicationSalt, ConstantsFTP.REGISTRATION_PASS, iterations);
+			String registerPasswordFromClient = networkMessage.getText();
+
+			statusMessage = new NetworkMessage();
+			if (registerPassword.equals(registerPasswordFromClient)) {
+				statusMessage.setType(MessageType.REGISTRATION_ALLOWED);
+				statusMessage.setMessageId(networkMessage.getMessageId());
+			}else {
+				statusMessage.setType(MessageType.REGISTRATION_FAILED);
+				statusMessage.setMessageId(networkMessage.getMessageId());
+			}
+
+			sendMessage(statusMessage);
+
+			break;
+
 		case CREATE_USER:
 			userId = UserManager.getInstance().createUser(networkMessage.getActor(), networkMessage.getPasswordHash(),
 					networkMessage.getEmail());

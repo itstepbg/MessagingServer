@@ -39,7 +39,7 @@ public class ConnectionThread extends Thread {
 				newCommunication.setSessionID(MessagingManager.generateSessionUUID());
 				MessagingManager.getInstance().addConnection(newCommunication);
 
-				String salt = Base64.getEncoder().encodeToString(Crypto.generateRandomBytes(8));
+				String salt = Base64.getEncoder().encodeToString(Crypto.generateRandomSalt());
 				NetworkMessage networkMessage = new NetworkMessage();
 				networkMessage.setType(MessageType.SALT);
 				networkMessage.setText(salt);
