@@ -128,15 +128,38 @@ public class ServerCommunication extends Communication {
 			if (FileUtils.createDirectory(directoryPath) == true) {
 				statusMessage.setStatus(NetworkMessage.STATUS_OK);
 				// FileUtils.createDirectory(directoryPath);
-			}
-
-			else {
+			} else {
 				statusMessage.setStatus(NetworkMessage.STATUS_ERROR_CREATING_DIRECTORY);
 			}
 
 			statusMessage.setMessageId(networkMessage.getMessageId());
 			sendMessage(statusMessage);
 			break;
+		case LIST_FILES:
+			// Directory fileList = new Directory();
+			statusMessage = new NetworkMessage();
+			statusMessage.setType(MessageType.STATUS_RESPONSE);
+			statusMessage.setStatus(NetworkMessage.STATUS_OK);
+
+			statusMessage.setMessageId(networkMessage.getMessageId());
+			// statusMessage.setFileList(fileList);
+			break;
+		case SHARE_FILE:
+
+			userId = UserManager.getInstance().insertSharedFileInfo(networkMessage.getUser(),
+					networkMessage.getFilePath());
+			statusMessage = new NetworkMessage();
+			statusMessage.setType(MessageType.STATUS_RESPONSE);
+
+			String userNameSharedTo = networkMessage.getUser();
+			String filePathSharedFile = networkMessage.getFilePath();
+			logger.info(networkMessage.getUser());
+			statusMessage.setStatus(NetworkMessage.STATUS_OK);
+
+			statusMessage.setMessageId(networkMessage.getMessageId());
+			sendMessage(statusMessage);
+			break;
+
 		default:
 			break;
 		}

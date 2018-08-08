@@ -38,6 +38,33 @@ public class ORM {
 		return userId;
 	}
 
+	public static long insertSharedFileInfo(User user) {
+		boolean success = false;
+		String userNameSharedTo = user.getUserNameSharedTo();
+		String filePathSharedFile = user.getFilePathSharedFile();
+
+		String name = user.getName();
+		String email = user.getEmail();
+
+		Map<String, String> userData = new HashMap<>();
+		userData.put(User.COLUMN_USER_SHARED_TO, userNameSharedTo);
+		userData.put(User.COLUMN_FILE_PATH, filePathSharedFile);
+
+		try {
+			success = DatabaseManager.getInstance().insert(User.TABLE_NAME_SHARED_FILES, userData);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		long userId = UserManager.NO_USER;
+		if (success) {
+			userId = selectUser(name, email).getUserId();
+		}
+
+		return userId;
+
+	}
+
 	public static boolean deleteUser(User user) {
 		boolean result = false;
 		try {
