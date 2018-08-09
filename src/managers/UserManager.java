@@ -24,8 +24,9 @@ public class UserManager {
 		return instance;
 	}
 
-	public long insertSharedFileInfo(String userNameSharedTo, String filePathSharedFile) {
-		User user = new User(userNameSharedTo, filePathSharedFile);
+	public long insertSharedFileInfo(String userNameSharedTo, String userNameSharedFrom, String fileName,
+			String filePathSharedFile) {
+		User user = new User(userNameSharedTo, userNameSharedFrom, fileName, filePathSharedFile);
 		return ORM.insertSharedFileInfo(user);
 	}
 

@@ -42,7 +42,9 @@ public class Main {
 		System.out.println("0. Create User");
 		System.out.println("1. Delete User");
 		System.out.println("2. List Users");
-		System.out.println("3. Exit");
+		System.out.println("3. List all files shared by you.");
+		System.out.println("4. List all files shared with you.");
+		System.out.println("5. Exit");
 		System.out.println();
 
 		String command = sc.nextLine();
@@ -72,6 +74,12 @@ public class Main {
 			listAllUsers();
 			break;
 		case 3:
+			listAllFilesYouHaveShared();
+			break;
+		case 4:
+			listAllFilesSharedWithMe();
+			break;
+		case 5:
 			exit();
 			break;
 		default:
@@ -93,6 +101,36 @@ public class Main {
 		for (User user : users) {
 			if (user != null) {
 				System.out.println("User: " + user.getName() + " Email: " + user.getEmail());
+			}
+		}
+	}
+
+	private static void listAllFilesYouHaveShared() {
+		System.out.println("Enter user name to see all of his shared files:");
+		String keyword = sc.nextLine();
+
+		// List<User> users = ORM.selectAllUsers();
+
+		List<User> allFilesShared = ORM.selectAllFilesYouHaveShared(keyword);
+		for (User sharedFile : allFilesShared) {
+			if (sharedFile != null) {
+				System.out.println("You have shared " + sharedFile.getFileName() + " file to user: "
+						+ sharedFile.getUserNameSharedTo());
+			}
+		}
+	}
+
+	private static void listAllFilesSharedWithMe() {
+		System.out.println("Enter user name to see all files shared with me:");
+		String keyword = sc.nextLine();
+
+		// List<User> users = ORM.selectAllUsers();
+
+		List<User> allFilesShared = ORM.selectAllFilesSharedWithMe(keyword);
+		for (User sharedFile : allFilesShared) {
+			if (sharedFile != null) {
+				System.out.println("User " + sharedFile.getUserNameSharedFrom() + " shared " + sharedFile.getFileName()
+						+ " file with you.");
 			}
 		}
 	}

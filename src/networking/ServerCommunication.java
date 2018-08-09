@@ -209,13 +209,15 @@ public class ServerCommunication extends Communication {
 		case SHARE_FILE:
 
 			userId = UserManager.getInstance().insertSharedFileInfo(networkMessage.getUser(),
+					UserManager.getInstance().getLoggedInUser(this.userId).getName(), networkMessage.getFileName(),
 					networkMessage.getFilePath());
+
 			statusMessage = new NetworkMessage();
 			statusMessage.setType(MessageType.STATUS_RESPONSE);
 
 			String userNameSharedTo = networkMessage.getUser();
 			String filePathSharedFile = networkMessage.getFilePath();
-			logger.info(networkMessage.getUser());
+
 			statusMessage.setStatus(NetworkMessage.STATUS_OK);
 
 			statusMessage.setMessageId(networkMessage.getMessageId());
