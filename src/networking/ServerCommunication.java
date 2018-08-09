@@ -48,10 +48,13 @@ public class ServerCommunication extends Communication {
 			statusMessage.setType(MessageType.CONTINUE_WITH_PASS);
 			statusMessage.setMessageId(networkMessage.getMessageId());
 
-			salt = Base64.getEncoder().encodeToString(Crypto.generateRandomSalt());
+			//new random salt for the current connection generated
+			salt = new String (Crypto.generateRandomSalt());
+			//encrypt the salt in base64
+			String saltEncodedBase64 = Base64.getEncoder().encodeToString(salt.getBytes());
 			iterations = Crypto.getRandomIterations();
 
-			statusMessage.setSalt(salt);
+			statusMessage.setSalt(saltEncodedBase64);
 			statusMessage.setIterations(iterations);
 			sendMessage(statusMessage);
 			break;
@@ -97,7 +100,8 @@ public class ServerCommunication extends Communication {
 			sendMessage(statusMessage);
 			break;
 		case LOGIN:
-			userId = UserManager.getInstance().login(salt, networkMessage.getActor(), networkMessage.getPasswordHash());
+			int randomIterationsFromClient = networkMessage.getIterations();
+			userId = UserManager.getInstance().login(salt, networkMessage.getActor(), networkMessage.getPasswordHash(), randomIterationsFromClient);
 
 			statusMessage = new NetworkMessage();
 			statusMessage.setType(MessageType.STATUS_RESPONSE);
