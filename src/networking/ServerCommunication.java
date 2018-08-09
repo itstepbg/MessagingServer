@@ -2,6 +2,7 @@ package networking;
 
 import java.net.Socket;
 
+import library.models.data.Directory;
 import library.models.network.MessageType;
 import library.models.network.NetworkMessage;
 import library.networking.Communication;
@@ -190,10 +191,20 @@ public class ServerCommunication extends Communication {
 			// Directory fileList = new Directory();
 			statusMessage = new NetworkMessage();
 			statusMessage.setType(MessageType.STATUS_RESPONSE);
-			statusMessage.setStatus(NetworkMessage.STATUS_OK);
+
+			String defaultDir = UserManager.USER_FILES_DIRECTORY
+					+ UserManager.getInstance().getLoggedInUser(this.userId).getName();
+
+			Directory dirToClient = new Directory(defaultDir);
+			dirToClient = FileUtils.listFiles(defaultDir, dirToClient);
+			dirToClient.printDirectories();
+			dirToClient.printFiles();
+			if (!dirToClient.equals(null)) {
+				statusMessage.setStatus(NetworkMessage.STATUS_OK);
+			}
 
 			statusMessage.setMessageId(networkMessage.getMessageId());
-			// statusMessage.setFileList(fileList);
+			statusMessage.setFileList(dirToClient);
 			break;
 		case SHARE_FILE:
 
