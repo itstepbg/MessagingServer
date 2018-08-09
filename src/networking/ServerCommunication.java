@@ -84,13 +84,21 @@ public class ServerCommunication extends Communication {
 					+ networkMessage.getFilePath();
 			handleIncomingFile(localFilePath, networkMessage.getMessageId());
 			break;
+		case DOWNLOAD_FILE:
+			String localPath = UserManager.USER_FILES_DIRECTORY
+					+ UserManager.getInstance().getLoggedInUser(this.userId).getName() + "\\"
+					+ networkMessage.getFilePath();
+			handleOutcomingFile(localPath, networkMessage.getMessageId());
+			break;
 		case UPLOAD_CHUNK:
 			handleFileChunk(networkMessage.getText());
 			break;
 		case DELETE_FILE:
 			statusMessage = new NetworkMessage();
 			statusMessage.setType(MessageType.STATUS_RESPONSE);
-			String filePath = networkMessage.getFilePath();
+			String filePath = UserManager.USER_FILES_DIRECTORY
+					+ UserManager.getInstance().getLoggedInUser(this.userId).getName() + "\\"
+					+ networkMessage.getFilePath();
 
 			if (FileUtils.deleteFile(filePath) == true) {
 				statusMessage.setStatus(NetworkMessage.STATUS_OK);
@@ -105,13 +113,57 @@ public class ServerCommunication extends Communication {
 			statusMessage = new NetworkMessage();
 			statusMessage.setType(MessageType.STATUS_RESPONSE);
 
-			String sourcePath = networkMessage.getFilePath();
-			String targetPath = networkMessage.getNewFilePath();
+			String sourcePath = UserManager.USER_FILES_DIRECTORY
+					+ UserManager.getInstance().getLoggedInUser(this.userId).getName() + "\\"
+					+ networkMessage.getFilePath();
+			String targetPath = UserManager.USER_FILES_DIRECTORY
+					+ UserManager.getInstance().getLoggedInUser(this.userId).getName() + "\\"
+					+ networkMessage.getNewFilePath();
 
 			if (FileUtils.copyFile(sourcePath, targetPath) == true) {
 				statusMessage.setStatus(NetworkMessage.STATUS_OK);
 			} else {
 				statusMessage.setStatus(NetworkMessage.STATUS_ERROR_COPYING_FILE);
+			}
+
+			statusMessage.setMessageId(networkMessage.getMessageId());
+			sendMessage(statusMessage);
+			break;
+		case MOVE_FILE:
+			statusMessage = new NetworkMessage();
+			statusMessage.setType(MessageType.STATUS_RESPONSE);
+
+			String srcPath = UserManager.USER_FILES_DIRECTORY
+					+ UserManager.getInstance().getLoggedInUser(this.userId).getName() + "\\"
+					+ networkMessage.getFilePath();
+			String targPath = UserManager.USER_FILES_DIRECTORY
+					+ UserManager.getInstance().getLoggedInUser(this.userId).getName() + "\\"
+					+ networkMessage.getNewFilePath();
+
+			if (FileUtils.moveFile(srcPath, targPath) == true) {
+				statusMessage.setStatus(NetworkMessage.STATUS_OK);
+			} else {
+				statusMessage.setStatus(NetworkMessage.STATUS_ERROR_MOVING_FILE);
+			}
+
+			statusMessage.setMessageId(networkMessage.getMessageId());
+			sendMessage(statusMessage);
+			break;
+		case RENAME_FILE:
+			statusMessage = new NetworkMessage();
+			statusMessage.setType(MessageType.STATUS_RESPONSE);
+
+			String pathName = UserManager.USER_FILES_DIRECTORY
+					+ UserManager.getInstance().getLoggedInUser(this.userId).getName() + "\\"
+					+ networkMessage.getFilePath();
+			String newPathName = UserManager.USER_FILES_DIRECTORY
+					+ UserManager.getInstance().getLoggedInUser(this.userId).getName() + "\\"
+					+ networkMessage.getNewFilePath();
+
+			if (FileUtils.moveFile(pathName, newPathName) == true) {
+				statusMessage.setStatus(NetworkMessage.STATUS_OK);
+			} else {
+				statusMessage.setStatus(NetworkMessage.STATUS_ERROR_RENAME_FILE);
 			}
 
 			statusMessage.setMessageId(networkMessage.getMessageId());
@@ -127,7 +179,6 @@ public class ServerCommunication extends Communication {
 
 			if (FileUtils.createDirectory(directoryPath) == true) {
 				statusMessage.setStatus(NetworkMessage.STATUS_OK);
-				// FileUtils.createDirectory(directoryPath);
 			} else {
 				statusMessage.setStatus(NetworkMessage.STATUS_ERROR_CREATING_DIRECTORY);
 			}

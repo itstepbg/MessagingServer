@@ -39,7 +39,7 @@ public class Main {
 	// listed in issue #1
 	public static void chooseMenuOption() {
 		System.out.println();
-		System.out.println("0. Create User"); 	 	
+		System.out.println("0. Create User");
 		System.out.println("1. Delete User");
 		System.out.println("2. List Users");
 		System.out.println("3. Exit");
