@@ -49,10 +49,12 @@ public class UserManager {
 	public long login(String salt, String name, String passwordHash) {
 		User user = getUser(name);
 
+
 		if (user == null) {
 			return NO_USER;
 		} else {
-			// The iterations are hardcoded for now.
+			// The iterations are hardcoded for now
+
 			String saltedPassword = Crypto.saltPassword(salt, user.getPasswordHash(), 1024);
 			if (saltedPassword.equals(passwordHash)) {
 				loggedUsers.put(user.getUserId(), user);

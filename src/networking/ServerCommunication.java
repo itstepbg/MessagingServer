@@ -54,7 +54,6 @@ public class ServerCommunication extends Communication {
 
 			statusMessage.setSalt(communicationSalt);
 			statusMessage.setIterations(iterations);
-			System.out.println("sends CONTINUE_WITH_PASS");
 			sendMessage(statusMessage);
 			break;
 
@@ -77,7 +76,10 @@ public class ServerCommunication extends Communication {
 
 			break;
 
+
+
 		case CREATE_USER:
+
 			userId = UserManager.getInstance().createUser(networkMessage.getActor(), networkMessage.getPasswordHash(),
 					networkMessage.getEmail());
 
