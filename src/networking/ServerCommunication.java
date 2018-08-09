@@ -17,7 +17,6 @@ public class ServerCommunication extends Communication {
 
 	// TODO This should be moved to the CommonCommunication class.
 	private Long userId = UserManager.NO_USER;
-	private String communicationSalt;
 	private int iterations;
 
 	public ServerCommunication(Socket communicationSocket) {
@@ -49,10 +48,10 @@ public class ServerCommunication extends Communication {
 			statusMessage.setType(MessageType.CONTINUE_WITH_PASS);
 			statusMessage.setMessageId(networkMessage.getMessageId());
 
-			communicationSalt = Base64.getEncoder().encodeToString(Crypto.generateRandomSalt());
+			salt = Base64.getEncoder().encodeToString(Crypto.generateRandomSalt());
 			iterations = Crypto.getRandomIterations();
 
-			statusMessage.setSalt(communicationSalt);
+			statusMessage.setSalt(salt);
 			statusMessage.setIterations(iterations);
 			sendMessage(statusMessage);
 			break;
@@ -60,7 +59,7 @@ public class ServerCommunication extends Communication {
 		case REGISTER_PASS:
 			logger.info("Registration password delivered");
 
-			String registerPassword = Crypto.saltPassword(communicationSalt, ConstantsFTP.REGISTRATION_PASS, iterations);
+			String registerPassword = Crypto.saltPassword(salt, ConstantsFTP.REGISTRATION_PASS, iterations);
 			String registerPasswordFromClient = networkMessage.getText();
 
 			statusMessage = new NetworkMessage();
