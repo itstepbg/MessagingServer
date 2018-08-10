@@ -77,9 +77,7 @@ public class ServerCommunication extends Communication {
 			sendMessage(statusMessage);
 
 			break;
-
-
-
+			
 		case CREATE_USER:
 
 			userId = UserManager.getInstance().createUser(networkMessage.getActor(), networkMessage.getPasswordHash(),
