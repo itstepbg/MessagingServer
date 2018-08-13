@@ -188,7 +188,6 @@ public class ServerCommunication extends Communication {
 			sendMessage(statusMessage);
 			break;
 		case LIST_FILES:
-			// Directory fileList = new Directory();
 			statusMessage = new NetworkMessage();
 			statusMessage.setType(MessageType.STATUS_RESPONSE);
 
@@ -197,14 +196,14 @@ public class ServerCommunication extends Communication {
 
 			Directory dirToClient = new Directory(defaultDir);
 			dirToClient = FileUtils.listFiles(defaultDir, dirToClient);
-			dirToClient.printDirectories();
-			dirToClient.printFiles();
+
 			if (!dirToClient.equals(null)) {
+				statusMessage.setListFiles(dirToClient);
 				statusMessage.setStatus(NetworkMessage.STATUS_OK);
 			}
 
 			statusMessage.setMessageId(networkMessage.getMessageId());
-			statusMessage.setFileList(dirToClient);
+			sendMessage(statusMessage);
 			break;
 		case SHARE_FILE:
 
