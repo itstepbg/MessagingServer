@@ -62,7 +62,7 @@ public class ServerCommunication extends Communication {
 		case REGISTER_PASS:
 			logger.info("Registration password delivered");
 
-			String registerPassword = Crypto.saltPassword(salt, ConstantsFTP.REGISTRATION_PASS, iterations);
+			registerPassword = Crypto.saltPassword(salt, ConstantsFTP.MASTER_PASS, iterations);
 			String registerPasswordFromClient = networkMessage.getText();
 
 			statusMessage = new NetworkMessage();
@@ -70,17 +70,27 @@ public class ServerCommunication extends Communication {
 				statusMessage.setType(MessageType.REGISTRATION_ALLOWED);
 				statusMessage.setMessageId(networkMessage.getMessageId());
 			}else {
-				statusMessage.setType(MessageType.REGISTRATION_FAILED);
+				statusMessage.setType(MessageType.AUTHENTICATION_FAILED);
 				statusMessage.setMessageId(networkMessage.getMessageId());
 			}
 
 			sendMessage(statusMessage);
 
 			break;
-			
+
 		case CREATE_USER:
 
-			userId = UserManager.getInstance().createUser(networkMessage.getActor(), networkMessage.getPasswordHash(),
+			String randomSalt = new String (Base64.getDecoder().decode(networkMessage.getSalt().getBytes()));
+			byte[] initVector = Base64.getDecoder().decode(networkMessage.getInitVector());
+			int iterations = networkMessage.getIterations();
+			String secretKey = Crypto.saltPassword(randomSalt,registerPassword, iterations);
+
+			String encryptedPasswordHash = new String(Base64.getDecoder().decode(networkMessage.getPassword()));
+
+			String passwordHash = Crypto.decryptAES256(encryptedPasswordHash, initVector, secretKey);
+
+
+			userId = UserManager.getInstance().createUser(networkMessage.getActor(), passwordHash,
 					networkMessage.getEmail());
 
 			statusMessage = new NetworkMessage();
@@ -99,7 +109,7 @@ public class ServerCommunication extends Communication {
 			break;
 		case LOGIN:
 			int randomIterationsFromClient = networkMessage.getIterations();
-			userId = UserManager.getInstance().login(salt, networkMessage.getActor(), networkMessage.getPasswordHash(), randomIterationsFromClient);
+			userId = UserManager.getInstance().login(salt, networkMessage.getActor(), networkMessage.getPassword(), randomIterationsFromClient);
 
 			statusMessage = new NetworkMessage();
 			statusMessage.setType(MessageType.STATUS_RESPONSE);
