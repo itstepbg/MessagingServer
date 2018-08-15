@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import library.models.data.User;
+import models.data.MasterUser;
 import storage.ORM;
 
 public class UserManager {
@@ -39,6 +40,10 @@ public class UserManager {
 
 	public User getUser(String keyword) {
 		return ORM.selectUser(keyword, keyword);
+	}
+
+	public MasterUser getMasterUser(String keyword) {
+		return ORM.selectMasterUser(keyword);
 	}
 
 	public User getLoggedInUser(Long userId) {

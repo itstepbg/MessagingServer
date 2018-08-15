@@ -36,6 +36,16 @@ public class Main {
 		}
 	}
 
+//
+//	DatabaseManager databaseManager;
+//	NetworkManager networkManager;
+//	boolean running = true;
+//	ConnectionThreadSSLServer sslThread;
+//	
+//	databaseManager = DatabaseManager.getInstance();
+//	networkManager = new NetworkManager();
+//	networkManager.startConnectionThread(3000);
+
 	// listed in issue #1
 	public static void chooseMenuOption() {
 		System.out.println();

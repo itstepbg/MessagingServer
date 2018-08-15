@@ -10,6 +10,7 @@ import java.util.Map;
 import library.models.data.User;
 import managers.DatabaseManager;
 import managers.UserManager;
+import models.data.MasterUser;
 
 public class ORM {
 
@@ -66,6 +67,23 @@ public class ORM {
 		return user;
 	}
 
+	public static MasterUser selectMasterUser(String name) {
+		MasterUser masterUser = null;
+		WCB filter = new WCB();
+		filter.eq(MasterUser.COLUMN_NAME, name);
+		ResultSet dbResultSet = null;
+		try {
+			dbResultSet = DatabaseManager.getInstance().select(MasterUser.TABLE_NAME, filter);
+			if (dbResultSet.next()) {
+				masterUser = resultToMasterUser(dbResultSet);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return masterUser;
+	}
+
 	public static List<User> selectAllUsers() {
 		List<User> listOfUsers = new ArrayList<>();
 		ResultSet dbResultSet = null;
@@ -106,4 +124,16 @@ public class ORM {
 		return result;
 	}
 
+	private static MasterUser resultToMasterUser(ResultSet dbResultSet) {
+		MasterUser result = null;
+		try {
+			String name = dbResultSet.getString(MasterUser.COLUMN_NAME);
+			String passwordHash = dbResultSet.getString(MasterUser.COLUMN_PASSWORD_HASH);
+
+			result = new MasterUser(name, passwordHash);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 }
