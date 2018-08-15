@@ -61,7 +61,7 @@ public class DatabaseManager {
 					dbPreparedStatement.setString(i, sqlData.getValues().get(i - 1));
 				}
 
-				result = dbPreparedStatement.executeUpdate() > 0;
+				result = (dbPreparedStatement.executeUpdate() > 0);
 				logger.info("Insert Completed Successfully...");
 
 			}
