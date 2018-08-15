@@ -97,36 +97,6 @@ public class Main {
 		}
 	}
 
-	private static void listAllFilesYouHaveShared() {
-		System.out.println("Enter user name to see all of his shared files:");
-		String keyword = sc.nextLine();
-
-		// List<User> users = ORM.selectAllUsers();
-
-		List<User> allFilesShared = ORM.selectAllFilesYouHaveShared(keyword);
-		for (User sharedFile : allFilesShared) {
-			if (sharedFile != null) {
-				System.out.println("You have shared " + sharedFile.getFileName() + " file to user: "
-						+ sharedFile.getUserNameSharedTo());
-			}
-		}
-	}
-
-	private static void listAllFilesSharedWithMe() {
-		System.out.println("Enter user name to see all files shared with me:");
-		String keyword = sc.nextLine();
-
-		// List<User> users = ORM.selectAllUsers();
-
-		List<User> allFilesShared = ORM.selectAllFilesSharedWithMe(keyword);
-		for (User sharedFile : allFilesShared) {
-			if (sharedFile != null) {
-				System.out.println("User " + sharedFile.getUserNameSharedFrom() + " shared " + sharedFile.getFileName()
-						+ " file with you.");
-			}
-		}
-	}
-
 	private static void deleteUser() {
 		System.out.println("Enter username or email to be deleted");
 		String keyword = sc.nextLine();
