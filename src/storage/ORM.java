@@ -38,6 +38,94 @@ public class ORM {
 		return userId;
 	}
 
+	public static long insertSharedFileInfo(User user) {
+		boolean success = false;
+		String userNameSharedTo = user.getUserNameSharedTo();
+		String userNameSharedFrom = user.getUserNameSharedFrom();
+		String filePathSharedFile = user.getFilePathSharedFile();
+		String fileName = user.getFileName();
+
+		Map<String, String> userData = new HashMap<>();
+		userData.put(User.COLUMN_USER_SHARED_TO, userNameSharedTo);
+		userData.put(User.COLUMN_USER_SHARED_FROM, userNameSharedFrom);
+		userData.put(User.COLUMN_FILE_NAME, fileName);
+		userData.put(User.COLUMN_FILE_PATH, filePathSharedFile);
+
+		try {
+			success = DatabaseManager.getInstance().insert(User.TABLE_NAME_SHARED_FILES, userData);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		long userId = UserManager.NO_USER;
+		// if (success) {
+		// userId = selectUser(name, email).getUserId();
+		// }
+
+		return userId;
+
+	}
+
+	public static List<User> selectAllFilesYouHaveShared(String userNameSharedFrom) {
+		List<User> listOfUsers = new ArrayList<>();
+
+		// User user = null;
+		WCB filter = new WCB();
+		filter.eq(User.COLUMN_USER_SHARED_FROM, userNameSharedFrom);
+		ResultSet dbResultSet = null;
+		try {
+			dbResultSet = DatabaseManager.getInstance().select(User.TABLE_NAME_SHARED_FILES, filter);
+
+			while (dbResultSet.next()) {
+				User tempUser = resultToUserSharedFiles(dbResultSet);
+				listOfUsers.add(tempUser);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (dbResultSet != null) {
+				try {
+					dbResultSet.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return listOfUsers;
+	}
+
+	public static List<User> selectAllFilesSharedWithMe(String userNameSharedTo) {
+		List<User> listOfUsers = new ArrayList<>();
+
+		// User user = null;
+		WCB filter = new WCB();
+		filter.eq(User.COLUMN_USER_SHARED_TO, userNameSharedTo);
+		ResultSet dbResultSet = null;
+		try {
+			dbResultSet = DatabaseManager.getInstance().select(User.TABLE_NAME_SHARED_FILES, filter);
+
+			while (dbResultSet.next()) {
+				User tempUser = resultToUserSharedFiles(dbResultSet);
+				listOfUsers.add(tempUser);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (dbResultSet != null) {
+				try {
+					dbResultSet.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return listOfUsers;
+	}
+
 	public static boolean deleteUser(User user) {
 		boolean result = false;
 		try {
@@ -100,6 +188,22 @@ public class ORM {
 			String email = dbResultSet.getString(User.COLUMN_EMAIL);
 
 			result = new User(userId, name, passwordHash, email);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	private static User resultToUserSharedFiles(ResultSet dbResultSet) {
+		User result = null;
+		try {
+
+			String userNameSharedTo = dbResultSet.getString(User.COLUMN_USER_SHARED_TO);
+			String userNameSharedFrom = dbResultSet.getString(User.COLUMN_USER_SHARED_FROM);
+			String fileName = dbResultSet.getString(User.COLUMN_FILE_NAME);
+			String filePathSharedFile = dbResultSet.getString(User.COLUMN_FILE_PATH);
+
+			result = new User(userNameSharedTo, userNameSharedFrom, fileName, filePathSharedFile);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
