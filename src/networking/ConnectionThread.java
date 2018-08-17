@@ -3,16 +3,14 @@ package networking;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Base64;
+
 import java.util.logging.Logger;
 
 import library.models.network.MessageType;
 import library.models.network.NetworkMessage;
-import library.util.ConstantsFTP;
-import library.util.Crypto;
 import library.util.MessagingLogger;
 import managers.MessagingManager;
-import storage.FTPConstants;
+
 
 public class ConnectionThread extends Thread {
 
@@ -44,7 +42,7 @@ public class ConnectionThread extends Thread {
 				// send server hello
 				NetworkMessage helloMessage = new NetworkMessage();
 				helloMessage.setType(MessageType.SERVER_HELLO);
-				helloMessage.setText(FTPConstants.SERVER_HELLO_MESSAGE);
+				helloMessage.setText(FTPLibrary.FTPConstants.SERVER_HELLO_MESSAGE);
 				newCommunication.sendMessage(helloMessage);
 
 			} catch (IOException e) {

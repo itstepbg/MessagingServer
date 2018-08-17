@@ -18,7 +18,6 @@ import library.util.FileUtils;
 import library.util.ConstantsFTP;
 import managers.MessagingManager;
 import managers.UserManager;
-import storage.FTPConstants;
 import storage.ORM;
 
 public class ServerCommunication extends Communication {
@@ -46,7 +45,7 @@ public class ServerCommunication extends Communication {
 			serverResponse.setType(MessageType.WELCOME_MESSAGE);
 			serverResponse.setMessageId(networkMessage.getMessageId());
 			serverResponse.setClientFQDN(networkMessage.getClientFQDN());
-			serverResponse.setText(FTPConstants.SERVER_WELCOME + " " + "<<" + networkMessage.getClientFQDN() + ">>");
+			serverResponse.setText(FTPLibrary.FTPConstants.SERVER_WELCOME + " " + "<<" + networkMessage.getClientFQDN() + ">>");
 			sendMessage(serverResponse);
 			break;
 
