@@ -2,25 +2,19 @@ package networking;
 
 import java.io.File;
 import java.net.Socket;
-<<<<<<< HEAD
-
-=======
 import java.nio.file.Files;
 import java.nio.file.Paths;
->>>>>>> Insertion of non-existing users and files in sql table is no longer possible. Verifications are added in the share file case.
-import java.util.List;
-
 import java.util.Base64;
-
+import java.util.List;
 
 import library.models.data.Directory;
 import library.models.data.User;
 import library.models.network.MessageType;
 import library.models.network.NetworkMessage;
 import library.networking.Communication;
+import library.util.ConstantsFTP;
 import library.util.Crypto;
 import library.util.FileUtils;
-import library.util.ConstantsFTP;
 import managers.MessagingManager;
 import managers.UserManager;
 import storage.ORM;
@@ -50,7 +44,8 @@ public class ServerCommunication extends Communication {
 			serverResponse.setType(MessageType.WELCOME_MESSAGE);
 			serverResponse.setMessageId(networkMessage.getMessageId());
 			serverResponse.setClientFQDN(networkMessage.getClientFQDN());
-			serverResponse.setText(FTPLibrary.FTPConstants.SERVER_WELCOME + " " + "<<" + networkMessage.getClientFQDN() + ">>");
+			serverResponse.setText(
+					FTPLibrary.FTPConstants.SERVER_WELCOME + " " + "<<" + networkMessage.getClientFQDN() + ">>");
 			sendMessage(serverResponse);
 			break;
 
@@ -61,9 +56,9 @@ public class ServerCommunication extends Communication {
 			statusMessage.setType(MessageType.CONTINUE_WITH_PASS);
 			statusMessage.setMessageId(networkMessage.getMessageId());
 
-			//new random salt for the current connection generated
-			salt = new String (Crypto.generateRandomSalt());
-			//encrypt the salt in base64
+			// new random salt for the current connection generated
+			salt = new String(Crypto.generateRandomSalt());
+			// encrypt the salt in base64
 			String saltEncodedBase64 = Base64.getEncoder().encodeToString(salt.getBytes());
 			iterations = Crypto.getRandomIterations();
 
@@ -82,7 +77,7 @@ public class ServerCommunication extends Communication {
 			if (registerPassword.equals(registerPasswordFromClient)) {
 				statusMessage.setType(MessageType.REGISTRATION_ALLOWED);
 				statusMessage.setMessageId(networkMessage.getMessageId());
-			}else {
+			} else {
 				statusMessage.setType(MessageType.AUTHENTICATION_FAILED);
 				statusMessage.setMessageId(networkMessage.getMessageId());
 			}
@@ -93,15 +88,14 @@ public class ServerCommunication extends Communication {
 
 		case CREATE_USER:
 
-			String randomSalt = new String (Base64.getDecoder().decode(networkMessage.getSalt().getBytes()));
+			String randomSalt = new String(Base64.getDecoder().decode(networkMessage.getSalt().getBytes()));
 			byte[] initVector = Base64.getDecoder().decode(networkMessage.getInitVector());
 			int iterations = networkMessage.getIterations();
-			String secretKey = Crypto.saltPassword(randomSalt,registerPassword, iterations);
+			String secretKey = Crypto.saltPassword(randomSalt, registerPassword, iterations);
 
 			String encryptedPasswordHash = new String(Base64.getDecoder().decode(networkMessage.getPassword()));
 
 			String passwordHash = Crypto.decryptAES256(encryptedPasswordHash, initVector, secretKey);
-
 
 			userId = UserManager.getInstance().createUser(networkMessage.getActor(), passwordHash,
 					networkMessage.getEmail());
@@ -126,7 +120,8 @@ public class ServerCommunication extends Communication {
 			break;
 		case LOGIN:
 			int randomIterationsFromClient = networkMessage.getIterations();
-			userId = UserManager.getInstance().login(salt, networkMessage.getActor(), networkMessage.getPassword(), randomIterationsFromClient);
+			userId = UserManager.getInstance().login(salt, networkMessage.getActor(), networkMessage.getPassword(),
+					randomIterationsFromClient);
 
 			statusMessage = new NetworkMessage();
 			statusMessage.setType(MessageType.STATUS_RESPONSE);
