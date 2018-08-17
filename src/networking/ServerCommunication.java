@@ -2,7 +2,12 @@ package networking;
 
 import java.io.File;
 import java.net.Socket;
+<<<<<<< HEAD
 
+=======
+import java.nio.file.Files;
+import java.nio.file.Paths;
+>>>>>>> Insertion of non-existing users and files in sql table is no longer possible. Verifications are added in the share file case.
 import java.util.List;
 
 import java.util.Base64;
@@ -323,19 +328,33 @@ public class ServerCommunication extends Communication {
 			sendMessage(statusMessage);
 			break;
 		case SHARE_FILE:
-
-			userId = UserManager.getInstance().insertSharedFileInfo(networkMessage.getUser(),
-					UserManager.getInstance().getLoggedInUser(this.userId).getName(), networkMessage.getFileName(),
-					networkMessage.getFilePath());
-
 			statusMessage = new NetworkMessage();
 			statusMessage.setType(MessageType.STATUS_RESPONSE);
 
 			String userNameSharedTo = networkMessage.getUser();
-			String filePathSharedFile = networkMessage.getFilePath();
+			boolean userExists = false;
+			for (User user : UserManager.getInstance().getAllUsers()) {
+				if (user.getName().equals(userNameSharedTo)) {
+					userExists = true;
+					statusMessage.setStatus(NetworkMessage.STATUS_OK);
+					break;
+				}
+			}
+			if (!userExists) {
+				statusMessage.setStatus(NetworkMessage.STATUS_NON_EXISTING_USER);
+			}
+			String filePathSharedFile = UserManager.USER_FILES_DIRECTORY
+					+ UserManager.getInstance().getLoggedInUser(this.userId).getName() + "\\"
+					+ networkMessage.getFilePath();
+			if (!Files.exists(Paths.get(filePathSharedFile))) {
+				statusMessage.setStatus(NetworkMessage.STATUS_ERROR_SHARING_FILE);
+			}
 
-			statusMessage.setStatus(NetworkMessage.STATUS_OK);
-
+			if (statusMessage.getStatus().equals(NetworkMessage.STATUS_OK)) {
+				userId = UserManager.getInstance().insertSharedFileInfo(networkMessage.getUser(),
+						UserManager.getInstance().getLoggedInUser(this.userId).getName(), networkMessage.getFileName(),
+						networkMessage.getFilePath());
+			}
 			statusMessage.setMessageId(networkMessage.getMessageId());
 			sendMessage(statusMessage);
 			break;
