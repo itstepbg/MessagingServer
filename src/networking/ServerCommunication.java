@@ -2,11 +2,11 @@ package networking;
 
 import java.io.File;
 import java.net.Socket;
-<<<<<<< HEAD
+
 import java.util.List;
-=======
+
 import java.util.Base64;
->>>>>>> daniela
+
 
 import library.models.data.Directory;
 import library.models.data.User;
