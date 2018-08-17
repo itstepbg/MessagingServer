@@ -1,5 +1,6 @@
 package managers;
 
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -52,15 +53,18 @@ public class UserManager {
 		return loggedUsers.get(userId);
 	}
 
-	public long login(String salt, String name, String passwordHash) {
-		User user = getUser(name);
+	//checks if the 
+	public long login(String salt, String name, String passwordHash, int randomIterationsFromClient) {
 
+		User user = getUser(name);
 		if (user == null) {
 			return NO_USER;
 		} else {
-			// The iterations are hardcoded for now.
-			String saltedPassword = Crypto.saltPassword(salt, user.getPasswordHash(), 1024);
-			if (saltedPassword.equals(passwordHash)) {
+			// The iterations are hardcoded for now
+
+			String saltedPassword = Crypto.saltPassword(salt, user.getPasswordHash(), randomIterationsFromClient);
+			String encodedPassBase64 = Base64.getEncoder().encodeToString(saltedPassword.getBytes());
+			if (encodedPassBase64.equals(passwordHash)) {
 				loggedUsers.put(user.getUserId(), user);
 				return user.getUserId();
 			}

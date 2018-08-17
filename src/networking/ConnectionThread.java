@@ -8,9 +8,11 @@ import java.util.logging.Logger;
 
 import library.models.network.MessageType;
 import library.models.network.NetworkMessage;
+import library.util.ConstantsFTP;
 import library.util.Crypto;
 import library.util.MessagingLogger;
 import managers.MessagingManager;
+import storage.FTPConstants;
 
 public class ConnectionThread extends Thread {
 
@@ -39,13 +41,12 @@ public class ConnectionThread extends Thread {
 				newCommunication.setSessionID(MessagingManager.generateSessionUUID());
 				MessagingManager.getInstance().addConnection(newCommunication);
 
-				String salt = Base64.getEncoder().encodeToString(Crypto.generateRandomBytes(8));
-				NetworkMessage networkMessage = new NetworkMessage();
-				networkMessage.setType(MessageType.SALT);
-				networkMessage.setText(salt);
+				// send server hello
+				NetworkMessage helloMessage = new NetworkMessage();
+				helloMessage.setType(MessageType.SERVER_HELLO);
+				helloMessage.setText(FTPConstants.SERVER_HELLO_MESSAGE);
+				newCommunication.sendMessage(helloMessage);
 
-				newCommunication.setSalt(salt);
-				newCommunication.sendMessage(networkMessage);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
