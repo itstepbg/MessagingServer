@@ -24,6 +24,9 @@ public class ServerCommunication extends Communication {
 	// TODO This should be moved to the CommonCommunication class.
 	private Long userId = UserManager.NO_USER;
 	private int iterations;
+	private String randomSalt;
+	private byte[] initVector;
+	private String secretKey;
 
 	public ServerCommunication(Socket communicationSocket) {
 		super(communicationSocket);
@@ -88,10 +91,10 @@ public class ServerCommunication extends Communication {
 
 		case CREATE_USER:
 
-			String randomSalt = new String(Base64.getDecoder().decode(networkMessage.getSalt().getBytes()));
-			byte[] initVector = Base64.getDecoder().decode(networkMessage.getInitVector());
-			int iterations = networkMessage.getIterations();
-			String secretKey = Crypto.saltPassword(randomSalt, registerPassword, iterations);
+			randomSalt = new String(Base64.getDecoder().decode(networkMessage.getSalt().getBytes()));
+			initVector = Base64.getDecoder().decode(networkMessage.getInitVector());
+			iterations = networkMessage.getIterations();
+			secretKey = Crypto.saltPassword(randomSalt, registerPassword, iterations);
 
 			String encryptedPasswordHash = new String(Base64.getDecoder().decode(networkMessage.getPassword()));
 
@@ -108,9 +111,9 @@ public class ServerCommunication extends Communication {
 			if (userId > UserManager.NO_USER) {
 				statusMessage.setStatus(NetworkMessage.STATUS_OK);
 
-				if (FileUtils.createDirectory(userDirectoryPath) == false) {
-					FileUtils.createDirectory(userDirectoryPath);
-				}
+				FileUtils.createDirectory(userDirectoryPath);
+//				if (FileUtils.createDirectory(userDirectoryPath) == false) {
+//				}
 				logger.info("User " + userId + " created successfully.");
 			} else {
 				statusMessage.setStatus(NetworkMessage.STATUS_ERROR_CREATING_USER);
@@ -154,13 +157,29 @@ public class ServerCommunication extends Communication {
 			String localFilePath = UserManager.USER_FILES_DIRECTORY
 					+ UserManager.getInstance().getLoggedInUser(this.userId).getName() + "\\"
 					+ networkMessage.getFilePath();
-			handleIncomingFile(localFilePath, networkMessage.getMessageId());
+
+			randomSalt = new String(Base64.getDecoder().decode(networkMessage.getSalt().getBytes()));
+			initVector = Base64.getDecoder().decode(networkMessage.getInitVector());
+			iterations = networkMessage.getIterations();
+			String userPasswordHash = UserManager.getInstance().getLoggedInUser(this.userId).getPasswordHash();
+			secretKey = Crypto.saltPassword(randomSalt, userPasswordHash, iterations);
+
+			System.out.println("Secret key: "+ secretKey);
+
+			handleIncomingFile(localFilePath, networkMessage.getMessageId(), secretKey, initVector);
 			break;
 		case DOWNLOAD_FILE:
 			String localPath = UserManager.USER_FILES_DIRECTORY
 					+ UserManager.getInstance().getLoggedInUser(this.userId).getName() + "\\"
 					+ networkMessage.getFilePath();
-			handleOutcomingFile(localPath, networkMessage.getMessageId());
+
+			randomSalt = new String(Base64.getDecoder().decode(networkMessage.getSalt().getBytes()));
+			initVector = Base64.getDecoder().decode(networkMessage.getInitVector());
+			iterations = networkMessage.getIterations();
+			String userPasswor = UserManager.getInstance().getLoggedInUser(this.userId).getPasswordHash();
+			secretKey = Crypto.saltPassword(randomSalt, userPasswor, iterations);
+
+			handleOutcomingFile(localPath, networkMessage.getMessageId(),secretKey, initVector);
 			break;
 		case UPLOAD_CHUNK:
 			handleFileChunk(networkMessage.getText());
